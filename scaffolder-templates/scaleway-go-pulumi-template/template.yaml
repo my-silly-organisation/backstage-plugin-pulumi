@@ -11,7 +11,7 @@ metadata:
     - go
 spec:
   owner: engin@pulumi.com
-  type: service
+  type: infrastructure
   parameters:
     - title: Provide project informations
       required:
