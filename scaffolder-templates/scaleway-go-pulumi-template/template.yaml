@@ -1,0 +1,46 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: scaleway-go-pulumi-template
+  title: Scaleway Go Pulumi Template
+  description: |
+    A template for creating a new Scaleway Go Pulumi project.
+  tags:
+    - pulumi
+    - scaleway
+    - go
+spec:
+  owner: engin@pulumi.com
+  type: infrastructure
+  parameters:
+    - title: Provide project informations
+      required:
+        - component_id
+        - owner
+      properties:
+        component_id:
+          title: Name
+          type: string
+          description: Unique name of the component.
+          ui:field: EntityNamePicker
+        description:
+          title: Description
+          type: string
+          description: Tell us more about this component.
+        owner:
+          title: Owner
+          type: string
+          description: Owner of the component
+          ui:field: OwnerPicker
+          ui:options:
+            allowedKinds:
+              - Group
+  steps:
+    - id: template
+      name: Fetch Skeleton + Template
+      action: fetch:template
+      input:
+        url: ./skeleton
+      values:
+        component_id: ${{ parameters.component_id }}
+        description: ${{ parameters.description }}

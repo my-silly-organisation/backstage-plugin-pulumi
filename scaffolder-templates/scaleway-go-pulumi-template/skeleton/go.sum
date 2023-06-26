@@ -1,0 +1,3 @@
+github.com/dirien/pulumi-scaleway/sdk/v2 v2.21.0 h1:pF4TV46POUCPP4Hd///VA7W3tO/tOZSU23WghgCELmc=
+github.com/dirien/pulumi-scaleway/sdk/v2 v2.21.0/go.mod h1:EtvyT1JcVviQg8rCzFUlemI5+XQI9gYXjYWcFZeRyps=
+github.com/pulumi/pulumi/sdk/v3 v3.70.0/go.mod h1:BUUBfQZsH0FPuznRfFHkR+b96VlXELnn+DgidFj4XSQ=
