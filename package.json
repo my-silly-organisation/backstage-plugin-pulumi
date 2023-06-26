@@ -1,0 +1,23 @@
+{
+  "name": "@pulumiverse/backstage-plugin-pulumi",
+  "version": "0.0.1",
+  "description": "Backstage Plugin for Pulumi",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pulumiverse/backstage-plugin-pulumi.git"
+  },
+  "keywords": [
+    "backstage",
+    "pulumi"
+  ],
+  "author": "Ringo De Smet <ringo@de-smet.name>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/pulumiverse/backstage-plugin-pulumi/issues"
+  },
+  "homepage": "https://github.com/pulumiverse/backstage-plugin-pulumi#readme"
+}
