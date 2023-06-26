@@ -35,6 +35,7 @@ spec:
           ui:options:
             allowedKinds:
               - Group
+              - User
     - title: Choose a location
       required:
         - repoUrl
