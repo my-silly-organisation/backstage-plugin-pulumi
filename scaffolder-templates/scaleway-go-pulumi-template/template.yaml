@@ -53,13 +53,14 @@ spec:
       action: fetch:template
       input:
         url: ./skeleton
-      values:
-        component_id: ${{ parameters.component_id }}
-        description: ${{ parameters.description }}
+        values:
+          component_id: ${{ parameters.component_id }}
+          description: ${{ parameters.description }}
     - id: publish
       name: Publish
       action: publish:github
       input:
         allowedHosts: [ "github.com" ]
+        repoVisibility: public
         description: This is ${{ parameters.component_id }}
         repoUrl: ${{ parameters.repoUrl }}
