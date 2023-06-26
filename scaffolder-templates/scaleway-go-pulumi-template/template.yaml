@@ -10,7 +10,7 @@ metadata:
     - scaleway
     - go
 spec:
-  owner: engin@pulumi.com
+  owner: user:guest
   type: infrastructure
   parameters:
     - title: Provide project informations
