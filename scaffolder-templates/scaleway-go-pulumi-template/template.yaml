@@ -67,6 +67,7 @@ spec:
         repoVisibility: public
         description: This is ${{ parameters.component_id }}
         repoUrl: ${{ parameters.repoUrl }}
+        defaultBranch: main
 
     - id: register
       name: Registering the Catalog Info Component
