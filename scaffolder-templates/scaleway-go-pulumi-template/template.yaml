@@ -35,6 +35,17 @@ spec:
           ui:options:
             allowedKinds:
               - Group
+    - title: Choose a location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
   steps:
     - id: template
       name: Fetch Skeleton + Template
@@ -44,3 +55,10 @@ spec:
       values:
         component_id: ${{ parameters.component_id }}
         description: ${{ parameters.description }}
+    - id: publish
+      name: Publish
+      action: publish:github
+      input:
+        allowedHosts: [ "github.com" ]
+        description: This is ${{ parameters.component_id }}
+        repoUrl: ${{ parameters.repoUrl }}
