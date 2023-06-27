@@ -46,17 +46,19 @@ spec:
             - kubernetes-gcp-go
             - microservice
         stack:
-          title: Stack
-          type: string
+          title: Select stacks
+          type: array
+          items:
+            type: string
+            enum:
+              - dev
+              - staging
+              - prod
           description: Stack to deploy to
-        command:
-          title: Pulumi Command
-          type: string
-          description: Command to run Pulumi
         args:
-          title: Pulumi Arguments
+          title: Pulumi Arguments (new command
           type: string
-          description: Arguments to run Pulumi
+          description: Arguments to pass to Pulumi CLI
     - title: Choose a location
       required:
         - repoUrl
@@ -79,7 +81,6 @@ spec:
           description: ${{ parameters.description }}
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
           owner: ${{ parameters.owner }}
-
     - id: pulumi-new
       name: Run Pulumi new
       action: run:pulumi
