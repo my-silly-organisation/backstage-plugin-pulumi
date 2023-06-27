@@ -54,7 +54,7 @@ spec:
       input:
         command: up
         args:
-          "-n ${{ parameters.component_id }}"
+        - "-n ${{ parameters.component_id }}"
 
     - id: publish
       name: Publish
