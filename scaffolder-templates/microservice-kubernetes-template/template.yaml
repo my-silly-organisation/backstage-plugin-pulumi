@@ -36,6 +36,27 @@ spec:
             allowedKinds:
               - Group
               - User
+        template:
+          title: Template
+          type: string
+          description: Template to use
+          enum:
+            - kubernetes-aws-go
+            - kubernetes-azure-go
+            - kubernetes-gcp-go
+            - microservice
+        stack:
+          title: Stack
+          type: string
+          description: Stack to deploy to
+        command:
+          title: Pulumi Command
+          type: string
+          description: Command to run Pulumi
+        args:
+          title: Pulumi Arguments
+          type: string
+          description: Arguments to run Pulumi
     - title: Choose a location
       required:
         - repoUrl
@@ -48,13 +69,29 @@ spec:
             allowedHosts:
               - github.com
   steps:
+    - id: template
+      name: Fetch Skeleton + Template
+      action: fetch:template
+      input:
+        url: ./skeleton
+        values:
+          component_id: ${{ parameters.component_id }}
+          description: ${{ parameters.description }}
+          destination: ${{ parameters.repoUrl | parseRepoUrl }}
+          owner: ${{ parameters.owner }}
+
     - id: pulumi-new
       name: Run Pulumi new
       action: run:pulumi
       input:
-        command: up
+        command: new
         args:
-        - "-n ${{ parameters.component_id }}"
+          - ${{ parameters.template }}
+          - "-n ${{ parameters.component_id }}"
+          - "-d ${{ parameters.description }}"
+          - "-s ${{ parameters.stack }}"
+          - "-y"
+          - ${{ parameters.args }}
 
     - id: publish
       name: Publish
