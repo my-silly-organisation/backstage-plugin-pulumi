@@ -97,6 +97,7 @@ spec:
           - "-d \"${{ parameters.description }}\""
           - "-s ${{ parameters.stack }}"
           - "-y"
+          - "--force"
           - ${{ parameters.args }}
 
     - id: publish
