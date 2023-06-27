@@ -36,6 +36,11 @@ spec:
             allowedKinds:
               - Group
               - User
+    - title: Configure Pulumi Template (new command)
+      required:
+        - stack
+        - template
+      properties:
         template:
           title: Template
           type: string
@@ -56,7 +61,7 @@ spec:
               - prod
           description: Stack to deploy to
         args:
-          title: Pulumi Arguments (new command
+          title: Pulumi CLI Arguments
           type: string
           description: Arguments to pass to Pulumi CLI
     - title: Choose a location
