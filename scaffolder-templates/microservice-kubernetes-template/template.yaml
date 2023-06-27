@@ -88,7 +88,7 @@ spec:
         args:
           - ${{ parameters.template }}
           - "-n ${{ parameters.component_id }}"
-          - "-d ${{ parameters.description }}"
+          - "-d \"${{ parameters.description }}\""
           - "-s ${{ parameters.stack }}"
           - "-y"
           - ${{ parameters.args }}
