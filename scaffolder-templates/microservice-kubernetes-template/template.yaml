@@ -46,6 +46,11 @@ spec:
       required:
         - stack
       properties:
+        token:
+          title: Civo API Token
+          type: string
+          description: Civo API Token
+          ui:widget: password
         language:
           title: Programming Language
           type: string
@@ -135,6 +140,10 @@ spec:
         repoBranch: main
         repoProjectPath: .
         organization: ediri
+        config: {
+          "civo:region": "lon1",
+          "civo:token": "${{ parameters.token}}"
+        }
         stacks: ${{ parameters.stack }}
         args:
           - ${{ parameters.args }}
