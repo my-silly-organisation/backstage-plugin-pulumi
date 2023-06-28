@@ -141,7 +141,7 @@ spec:
         repoProjectPath: .
         organization: ediri
         config:
-          "civo:region": "lon1",
+          "civo:region": "lon1"
           "civo:token": "${{ parameters.token}}"
         output:
           - kubeconfig
