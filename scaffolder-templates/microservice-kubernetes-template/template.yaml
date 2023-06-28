@@ -152,7 +152,7 @@ spec:
         up: true
         name: "${{ parameters.component_id }}-infrastructure"
         repoUrl: "https://github.com/${{ (parameters.repoUrl | parseRepoUrl)['owner'] }}/${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}"
-        repoProjectPath: .
+        repoProjectPath: infrastructure
         organization: ediri
         config:
           "civo:region": "lon1"
@@ -171,7 +171,7 @@ spec:
         up: true
         name: "${{ parameters.component_id }}-services"
         repoUrl: "https://github.com/${{ (parameters.repoUrl | parseRepoUrl)['owner'] }}/${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}"
-        repoProjectPath: .
+        repoProjectPath: service
         organization: ediri
         config:
           "infra:infra:stack-reference-name": "${{ parameters.component_id }}-infrastructure"
