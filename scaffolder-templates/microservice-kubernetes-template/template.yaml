@@ -128,7 +128,7 @@ spec:
         repoBranch: main
         repoProjectPath: .
         organization: ediri
-        stack: ${{ parameters.stack }}
+        stacks: ${{ parameters.stack }}
         args:
           - ${{ parameters.args }}
 
