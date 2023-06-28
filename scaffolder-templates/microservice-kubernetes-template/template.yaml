@@ -117,7 +117,7 @@ spec:
         template: "https://github.com/my-silly-organisation/microservice-civo/tree/main/infrastructure-${{ parameters.language }}"
         args:
           - ${{ parameters.args }}
-          - "-dir infrastructure"
+          - "--dir infrastructure"
 
     - id: pulumi-new-service
       name: Run Pulumi new (service)
@@ -131,7 +131,7 @@ spec:
         template: "https://github.com/my-silly-organisation/microservice-civo/tree/main/service-${{ parameters.language }}"
         args:
           - ${{ parameters.args }}
-          - "-dir service"
+          - "--dir service"
 
     - id: publish
       name: Publish
