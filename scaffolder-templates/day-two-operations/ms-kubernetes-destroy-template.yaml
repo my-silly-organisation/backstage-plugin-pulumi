@@ -2,7 +2,7 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: ms-kubernetes-destroy-template
-  title: Microservice Kubernetes Destroy Template
+  title: Microservice Kubernetes Destroy
   description: |
     A template for destroying a Microservice on Civo Kubernetes.
     This template will destroy following components:
@@ -22,7 +22,6 @@ spec:
     - title: Provide project informations
       required:
         - component_id
-        - owner
       properties:
         component_id:
           title: Name
