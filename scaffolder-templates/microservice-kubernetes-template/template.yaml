@@ -169,7 +169,7 @@ spec:
         new: false
         deployment: false
         up: true
-        name: "${{ parameters.component_id }}-services"
+        name: "${{ parameters.component_id }}-service"
         repoUrl: "https://github.com/${{ (parameters.repoUrl | parseRepoUrl)['owner'] }}/${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}"
         repoProjectPath: service
         organization: ediri
