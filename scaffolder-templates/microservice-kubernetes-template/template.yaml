@@ -2,13 +2,19 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: microservice-kubernetes-template
-  title: Microservice on Kubernetes
+  title: Microservice on Civo Kubernetes
   description: |
-    A template to create all parts to run a microservice on Kubernetes
+    A template for creating a new Microservice on Civo Kubernetes.
+    This template will create following components:
+    - Kubernetes cluster on Civo per stage
+    - Tekton pipeline to build and deploy the microservice
+    - ArgoCD to deploy the microservice
   tags:
     - pulumi
     - microservice
-    - scaleway
+    - kubernetes
+    - tekton
+    - argocd
 spec:
   owner: user:dirien
   type: infrastructure
@@ -103,7 +109,7 @@ spec:
         description: ${{ parameters.description | dump }}
         organization: ediri
         stacks: ${{ parameters.stack }}
-        template: "kubernetes-azure-${{ parameters.language }}"
+        template: "civo-${{ parameters.language }}"
         args:
           - ${{ parameters.args }}
 
