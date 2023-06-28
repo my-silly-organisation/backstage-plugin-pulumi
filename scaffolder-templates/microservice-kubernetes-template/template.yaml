@@ -133,12 +133,6 @@ spec:
           - ${{ parameters.args }}
           - "--dir service"
 
-    - id: wait
-      name: Wait for Pulumi to finish
-      action: debug:wait
-      input:
-        minutes: 10
-
     - id: publish
       name: Publish
       action: publish:github
