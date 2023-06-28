@@ -100,7 +100,7 @@ spec:
       input:
         new: true
         name: ${{ parameters.component_id }}
-        description: ${{ parameters.description }}
+        description: ${{ parameters.description | dump }}
         organization: ediri
         stacks: ${{ parameters.stack }}
         template: "kubernetes-azure-${{ parameters.language }}"
@@ -113,7 +113,7 @@ spec:
       input:
         allowedHosts: [ "github.com" ]
         repoVisibility: public
-        description: This is ${{ parameters.component_id }}
+        description: "This is ${{ parameters.component_id }}"
         repoUrl: ${{ parameters.repoUrl }}
         defaultBranch: main
 
