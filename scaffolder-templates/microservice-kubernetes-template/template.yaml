@@ -124,7 +124,7 @@ spec:
         new: false
         deployment: true
         up: true
-        repoUrl: ${{ parameters.repoUrl }}
+        repoUrl: "https://github.com/${{ (parameters.repoUrl | parseRepoUrl)['owner'] }}/${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}"
         repoBranch: main
         repoProjectPath: .
         organization: ediri
