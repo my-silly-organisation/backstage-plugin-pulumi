@@ -65,6 +65,7 @@ spec:
               - Development
               - Staging
               - Production
+          uniqueItems: true
           description: Stack to deploy to
         args:
           title: Pulumi CLI Arguments (optional)
@@ -101,6 +102,7 @@ spec:
         name: ${{ parameters.component_id }}
         description: ${{ parameters.description }}
         organization: ediri
+        stacks: ${{ parameters.stack }}
         template: "kubernetes-azure-${{ parameters.language }}"
         args:
           - ${{ parameters.args }}
