@@ -114,7 +114,7 @@ spec:
         description: ${{ parameters.description | dump }}
         organization: ediri
         stacks: ${{ parameters.stack }}
-        template: "civo-${{ parameters.language }}"
+        template: "https://github.com/my-silly-organisation/microservice-civo/tree/main/infrastructure-${{ parameters.language }}"
         args:
           - ${{ parameters.args }}
 
@@ -140,10 +140,11 @@ spec:
         repoBranch: main
         repoProjectPath: .
         organization: ediri
-        config: {
+        config:
           "civo:region": "lon1",
           "civo:token": "${{ parameters.token}}"
-        }
+        output:
+          - kubeconfig
         stacks: ${{ parameters.stack }}
         args:
           - ${{ parameters.args }}
