@@ -36,20 +36,22 @@ spec:
             allowedKinds:
               - Group
               - User
-    - title: Configure Pulumi Template (new command)
+    - title: Configure Infrastructure
       required:
         - stack
-        - template
       properties:
-        template:
-          title: Template
+        language:
+          title: Programming Language
           type: string
-          description: Template to use
           enum:
-            - kubernetes-aws-go
-            - kubernetes-azure-go
-            - kubernetes-gcp-go
-            - microservice
+            - go
+            - typescript
+            - python
+          enumNames:
+            - Go
+            - TypeScript
+            - Python
+          description: Programming language to use
         stack:
           title: Select stacks
           type: array
@@ -59,11 +61,15 @@ spec:
               - dev
               - staging
               - prod
+            enumNames:
+              - Development
+              - Staging
+              - Production
           description: Stack to deploy to
         args:
-          title: Pulumi CLI Arguments
+          title: Pulumi CLI Arguments (optional)
           type: string
-          description: Arguments to pass to Pulumi CLI
+          description: Optional arguments to pass to the Pulumi CLI
     - title: Choose a location
       required:
         - repoUrl
@@ -89,16 +95,14 @@ spec:
 
     - id: pulumi-new
       name: Run Pulumi new
-      action: run:pulumi
+      action: pulumi:run
       input:
-        command: new
+        new: true
+        name: ${{ parameters.component_id }}
+        description: ${{ parameters.description }}
+        organization: ediri
+        template: "kubernetes-azure-${{ parameters.language }}"
         args:
-          - ${{ parameters.template }}
-          - "-n ${{ parameters.component_id }}"
-          - "-d \"${{ parameters.description }}\""
-          - "-s ${{ parameters.stack }}"
-          - "-y"
-          - "--force"
           - ${{ parameters.args }}
 
     - id: publish
@@ -110,6 +114,21 @@ spec:
         description: This is ${{ parameters.component_id }}
         repoUrl: ${{ parameters.repoUrl }}
         defaultBranch: main
+
+    - id: pulumi-deploy
+      name: Run Pulumi up
+      action: pulumi:run
+      input:
+        new: false
+        deployment: true
+        up: true
+        repoUrl: ${{ steps['publish'].output.repoUrl }}
+        repoBranch: main
+        repoProjectPath: .
+        organization: ediri
+        stack: ${{ parameters.stack }}
+        args:
+          - ${{ parameters.args }}
 
     - id: register
       name: Registering the Catalog Info Component
