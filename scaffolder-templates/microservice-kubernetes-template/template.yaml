@@ -124,7 +124,7 @@ spec:
         new: false
         deployment: true
         up: true
-        repoUrl: ${{ steps['publish'].output.repoUrl }}
+        repoUrl: ${{ parameters.repoUrl }}
         repoBranch: main
         repoProjectPath: .
         organization: ediri
