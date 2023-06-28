@@ -124,11 +124,11 @@ spec:
         defaultBranch: main
 
     - id: pulumi-deploy
-      name: Run Pulumi up
+      name: Run Pulumi up locally
       action: pulumi:run
       input:
         new: false
-        deployment: true
+        deployment: false
         up: true
         name: ${{ parameters.component_id }}
         repoUrl: "https://github.com/${{ (parameters.repoUrl | parseRepoUrl)['owner'] }}/${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}"
