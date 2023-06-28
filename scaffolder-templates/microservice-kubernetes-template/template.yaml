@@ -167,7 +167,7 @@ spec:
       action: pulumi:run
       input:
         new: false
-        deployment: true
+        deployment: false
         up: true
         name: "${{ parameters.component_id }}-services"
         repoUrl: "https://github.com/${{ (parameters.repoUrl | parseRepoUrl)['owner'] }}/${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}"
