@@ -106,17 +106,32 @@ spec:
           owner: ${{ parameters.owner }}
 
     - id: pulumi-new
-      name: Run Pulumi new
+      name: Run Pulumi new (infrastructure)
       action: pulumi:run
       input:
         new: true
-        name: ${{ parameters.component_id }}
+        name: "${{ parameters.component_id }}-infrastructure"
         description: ${{ parameters.description | dump }}
         organization: ediri
         stacks: ${{ parameters.stack }}
         template: "https://github.com/my-silly-organisation/microservice-civo/tree/main/infrastructure-${{ parameters.language }}"
         args:
           - ${{ parameters.args }}
+          - "-dir infrastructure"
+
+    - id: pulumi-new
+      name: Run Pulumi new (service)
+      action: pulumi:run
+      input:
+        new: true
+        name: "${{ parameters.component_id }}-service"
+        description: ${{ parameters.description | dump }}
+        organization: ediri
+        stacks: ${{ parameters.stack }}
+        template: "https://github.com/my-silly-organisation/microservice-civo/tree/main/service-${{ parameters.language }}"
+        args:
+          - ${{ parameters.args }}
+          - "-dir service"
 
     - id: publish
       name: Publish
@@ -128,16 +143,15 @@ spec:
         repoUrl: ${{ parameters.repoUrl }}
         defaultBranch: main
 
-    - id: pulumi-deploy
-      name: Run Pulumi up locally
+    - id: pulumi-deploy-infrastucture
+      name: Run Pulumi up (infrastructure)
       action: pulumi:run
       input:
         new: false
         deployment: false
         up: true
-        name: ${{ parameters.component_id }}
+        name: "${{ parameters.component_id }}-infrastructure"
         repoUrl: "https://github.com/${{ (parameters.repoUrl | parseRepoUrl)['owner'] }}/${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}"
-        repoBranch: main
         repoProjectPath: .
         organization: ediri
         config:
@@ -146,8 +160,22 @@ spec:
         outputs:
           - kubeconfig
         stacks: ${{ parameters.stack }}
-        args:
-          - ${{ parameters.args }}
+
+
+    - id: pulumi-deploy-services
+      name: Run Pulumi up (services)
+      action: pulumi:run
+      input:
+        new: false
+        deployment: true
+        up: true
+        name: "${{ parameters.component_id }}-services"
+        repoUrl: "https://github.com/${{ (parameters.repoUrl | parseRepoUrl)['owner'] }}/${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}"
+        repoProjectPath: .
+        organization: ediri
+        config:
+          "infra:infra:stack-reference-name": "${{ parameters.component_id }}-infrastructure"
+        stacks: ${{ parameters.stack }}
 
     - id: register
       name: Registering the Catalog Info Component
