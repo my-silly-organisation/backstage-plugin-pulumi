@@ -95,7 +95,7 @@ spec:
               - github.com
   steps:
     - id: template
-      name: Fetch Skeleton + Template
+      name: Create Project
       action: fetch:template
       input:
         url: ./skeleton
@@ -106,7 +106,7 @@ spec:
           owner: ${{ parameters.owner }}
 
     - id: pulumi-new-infrastucture
-      name: Run Pulumi new (infrastructure)
+      name: Create Infrastructure Pulumi Project
       action: pulumi:run
       input:
         new: true
@@ -120,7 +120,7 @@ spec:
           - "--dir infrastructure"
 
     - id: pulumi-new-service
-      name: Run Pulumi new (service)
+      name: Create Service Pulumi Project
       action: pulumi:run
       input:
         new: true
@@ -134,7 +134,7 @@ spec:
           - "--dir service"
 
     - id: publish
-      name: Publish
+      name: Publish to GitHub
       action: publish:github
       input:
         allowedHosts: [ "github.com" ]
@@ -144,7 +144,7 @@ spec:
         defaultBranch: main
 
     - id: pulumi-deploy-infrastucture
-      name: Run Pulumi up (infrastructure)
+      name: Deploy Infrastructure
       action: pulumi:run
       input:
         new: false
@@ -163,18 +163,18 @@ spec:
 
 
     - id: pulumi-deploy-services
-      name: Run Pulumi up (services)
+      name: Deploy Services
       action: pulumi:run
       input:
         new: false
-        deployment: false
+        deployment: true
         up: true
         name: "${{ parameters.component_id }}-service"
         repoUrl: "https://github.com/${{ (parameters.repoUrl | parseRepoUrl)['owner'] }}/${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}"
         repoProjectPath: service
         organization: ediri
         config:
-          "infra:infra:stack-reference-name": "${{ parameters.component_id }}-infrastructure"
+          "infra:stack-reference-name": "${{ parameters.component_id }}-infrastructure"
         stacks: ${{ parameters.stack }}
 
     - id: register
