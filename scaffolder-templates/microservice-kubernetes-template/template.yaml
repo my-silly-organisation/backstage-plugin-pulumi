@@ -172,6 +172,7 @@ spec:
         name: "${{ parameters.component_id }}-service"
         repoUrl: "https://github.com/${{ (parameters.repoUrl | parseRepoUrl)['owner'] }}/${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}"
         repoProjectPath: service
+        repoBranch: main
         organization: ediri
         config:
           "infra:stack-reference-name": "${{ parameters.component_id }}-infrastructure"
