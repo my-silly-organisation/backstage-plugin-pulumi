@@ -181,7 +181,7 @@ spec:
         repoBranch: main
         organization: ediri
         config:
-          "infra:stack-reference-name": "${{ parameters.component_id }}-infrastructure"
+          "infra:stack-reference-name": "ediri/${{ parameters.component_id }}-infrastructure"
         stacks: ${{ parameters.stack }}
 
     - id: register
