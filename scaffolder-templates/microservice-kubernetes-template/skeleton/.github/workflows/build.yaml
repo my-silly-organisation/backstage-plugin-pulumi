@@ -6,6 +6,7 @@ on:
       - 'main'
     paths:
       - "microservice/**"
+      - "!microservice/kustomize/**"
 
 permissions: read-all
 
@@ -25,15 +26,17 @@ jobs:
         uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2.2.0
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
+          username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+    {% endraw %}
       - name: Build and push Docker image
         uses: docker/build-push-action@2eb1c1961a95fc15694676618e422e8ba1d63825 # v4.1.1
         with:
           context: microservice
           push: true
-          tags: ${{ github.sha }},latest
-    {% endraw %}
+          file: microservice/Dockerfile
+          tags: ghcr.io/${{values.destination.owner}}/${{values.component_id}}:${{ '${{ github.sha }}' }},ghcr.io/${{values.destination.owner}}/${{values.component_id}}:latest
+
   generate:
     name: Generate Kubernetes manifests
     runs-on: ubuntu-latest
@@ -48,12 +51,12 @@ jobs:
       - uses: imranismail/setup-kustomize@6691bdeb1b0a3286fb7f70fd1423c10e81e5375f # v2.0.0
         name: Setup Kustomize
       - run: |
-          kustomize edit set image app:ghcr.io/${{values.destination.owner}}/${{values.component_id}}:${{ '${{ github.sha }}' }}
+          kustomize edit set image goapp=ghcr.io/${{values.destination.owner}}/${{values.component_id}}:${{ '${{ github.sha }}' }}
           cat kustomization.yaml
           git config --local user.email "action@github.com"
           git config --local user.name "Deploy Action"
           git commit -am "change image tag"
-        working-directory: microservice
+        working-directory: microservice/kustomize
         name: Update image tag
       - name: push
         uses: ad-m/github-push-action@master
