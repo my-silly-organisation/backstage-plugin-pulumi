@@ -181,11 +181,19 @@ export function createRunPulumiAction() {
                         ctx.logger.info(`repoBranch: ${ctx.input.repoBranch}`)
                         const stack = ctx.input.stacks[0]
                         const stackName = fullyQualifiedStackName(ctx.input.organization, ctx.input.name, stack)
+
+                        const configs = [];
+                        for (const [key, value] of Object.entries(ctx.input.config)) {
+                            configs.push(`pulumi config set ${key} --stack ${stackName} --plaintext --non-interactive -- ${value}/${stack}`)
+                        }
+
                         const remoteStack = await RemoteWorkspace.createOrSelectStack({
                             stackName: stackName,
                             url: ctx.input.repoUrl,
                             branch: "refs/heads/" + ctx.input.repoBranch,
                             projectPath: ctx.input.repoProjectPath,
+                        }, {
+                            preRunCommands: configs,
                         })
                         ctx.logger.info(`Successfully initialized stack ${remoteStack.name}`)
                         ctx.logger.info(`Refreshing stack ${remoteStack.name}...`)

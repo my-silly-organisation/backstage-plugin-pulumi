@@ -7,13 +7,14 @@ metadata:
     A template for creating a new Microservice on Civo Kubernetes.
     This template will create following components:
     - Kubernetes cluster on Civo per stage
-    - Tekton pipeline to build and deploy the microservice
+    - GitHub repository for the microservice
+    - GitHub actions to build the microservice
     - ArgoCD to deploy the microservice
   tags:
     - pulumi
     - microservice
     - kubernetes
-    - tekton
+    - GitHub
     - argocd
 spec:
   owner: user:dirien
@@ -137,7 +138,7 @@ spec:
       name: Wait for Pulumi to finish
       action: debug:wait
       input:
-        seconds: 29
+        seconds: 10
 
     - id: publish
       name: Publish to GitHub
@@ -148,6 +149,12 @@ spec:
         description: "This is ${{ parameters.component_id }}"
         repoUrl: ${{ parameters.repoUrl }}
         defaultBranch: main
+
+    - id: wait
+      name: Wait for Publish to finish
+      action: debug:wait
+      input:
+        seconds: 29
 
     - id: pulumi-deploy-infrastucture
       name: Deploy Infrastructure

@@ -1,7 +1,7 @@
 {
   "name": "backstage-plugin-scaffolder-backend-module-pulumi",
   "description": "The pulumi module for @backstage/plugin-scaffolder-backend",
-  "version": "0.1.5",
+  "version": "0.2.17",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -23,7 +23,8 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/plugin-scaffolder-backend": "^1.15.0"
+    "@backstage/plugin-scaffolder-backend": "^1.15.0",
+    "@pulumi/pulumi": "^3.73.0"
   },
   "devDependencies": {
     "@backstage/backend-common": "^0.19.0",
