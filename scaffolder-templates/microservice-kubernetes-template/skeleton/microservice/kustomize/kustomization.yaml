@@ -1,12 +1,12 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- deployment.yaml
-- services.yaml
+  - deployment.yaml
+  - services.yaml
 
 namespace: ${{values.component_id}}
 
 images:
-- name: goapp
-  newName: ghcr.io/xx
-  newTag: latest
+  - name: goapp
+    newName: goapp
+    newTag: v1
