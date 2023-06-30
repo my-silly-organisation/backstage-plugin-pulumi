@@ -149,6 +149,10 @@ spec:
         description: "This is ${{ parameters.component_id }}"
         repoUrl: ${{ parameters.repoUrl }}
         defaultBranch: main
+        requiredApprovingReviewCount: 0
+        bypassPullRequestAllowances:
+          users:
+            - actions-user
 
     - id: wait2
       name: Wait for Publish to finish
