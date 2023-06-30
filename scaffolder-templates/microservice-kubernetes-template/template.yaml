@@ -191,6 +191,11 @@ spec:
         organization: ediri
         config:
           "infra:stack-reference-name": "ediri/${{ parameters.component_id }}-infrastructure"
+          "application-name": ${{ parameters.component_id }}
+          "application-namespace": ${{ parameters.component_id }}
+          "application-repo-path": microservice/kustomize
+          "application-repo-url": "https://github.com/${{ (parameters.repoUrl | parseRepoUrl)['owner'] }}/${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}"
+          "application-repo-branch": main
         stacks: ${{ parameters.stack }}
 
     - id: register
@@ -208,4 +213,5 @@ spec:
         icon: catalog
         entityRef: ${{ steps['register'].output.entityRef }}
       - title: KubeConfig
-        url: ${{ steps['pulumi-deploy-infrastucture'].output.kubeconfig }}
+        content: |
+          ${{ steps['pulumi-deploy-infrastucture'].output.kubeconfig }}
