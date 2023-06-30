@@ -106,7 +106,7 @@ spec:
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
           owner: ${{ parameters.owner }}
 
-    - id: pulumi-new-infrastucture
+    - id: pulumi-new-infrastructure
       name: Create Infrastructure Pulumi Project
       action: pulumi:run
       input:
@@ -158,8 +158,8 @@ spec:
       input:
         seconds: 29
 
-    - id: pulumi-deploy-infrastucture
-      name: Deploy Infrastructure
+    - id: pulumi-deploy-infrastructure
+      name: Deploy Infrastructure (local)
       action: pulumi:run
       input:
         new: false
@@ -178,7 +178,7 @@ spec:
 
 
     - id: pulumi-deploy-services
-      name: Deploy Services
+      name: Deploy Services (via Deployment)
       action: pulumi:run
       input:
         new: false
@@ -212,6 +212,7 @@ spec:
       - title: Open the Catalog Info Component
         icon: catalog
         entityRef: ${{ steps['register'].output.entityRef }}
+    text:
       - title: KubeConfig
         content: |
-          ${{ steps['pulumi-deploy-infrastucture'].output.kubeconfig }}
+          `${{ steps['pulumi-deploy-infrastructure'].output.kubeconfig }}`
