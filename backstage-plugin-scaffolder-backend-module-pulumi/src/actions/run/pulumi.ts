@@ -184,7 +184,11 @@ export function createRunPulumiAction() {
 
                         const configs = [];
                         for (const [key, value] of Object.entries(ctx.input.config)) {
-                            configs.push(`pulumi config set ${key} --stack ${stackName} --plaintext --non-interactive -- ${value}/${stack}`)
+                            if (key === "infra:stack-reference-name") {
+                                configs.push(`pulumi config set ${key} --stack ${stackName} --plaintext --non-interactive -- ${value}/${stack}`)
+                            } else {
+                                configs.push(`pulumi config set ${key} --stack ${stackName} --plaintext --non-interactive -- ${value}`)
+                            }
                         }
 
                         const remoteStack = await RemoteWorkspace.createOrSelectStack({
