@@ -132,8 +132,11 @@ export function createRunPulumiAction() {
                     await exec(`pulumi new ${ctx.input.template} ${ctx.input.args.join(' ')} --yes --force -n ${ctx.input.name} -d ${ctx.input.description} -s ${stackName}`, (error: {
                         message: any;
                     }, stdout: any, stderr: any) => {
-                        if (error || stderr) {
+                        if (error) {
                             throw new Error(error.message);
+                        }
+                        if (stderr) {
+                            throw new Error(stderr);
                         }
                         ctx.logger.info(`${stdout}`);
                     });

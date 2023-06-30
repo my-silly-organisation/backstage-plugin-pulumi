@@ -1,29 +1,29 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: ${{values.component_id}}+"-infrastructure"
+  name: ${{values.component_id}}+-infrastructure
   {% if values.description %}
   description: ${{values.description | dump}}
   {% endif %}
   annotations:
     github.com/project-slug: ${{values.destination.owner + "/" + values.destination.repo}}
-    pulumi.com/project-slug: ${{values.organization }}/${{values.component_id}}+"-infrastructure"
+    pulumi.com/owner: ${{values.organization }}
 spec:
-  type: infrastructure
+  type: pulumi
   lifecycle: development
   owner: ${{values.owner | dump}}
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: ${{values.component_id}}+"-service"
+  name: ${{values.component_id}}+-service
   {% if values.description %}
   description: ${{values.description | dump}}
   {% endif %}
   annotations:
     github.com/project-slug: ${{values.destination.owner + "/" + values.destination.repo}}
-    pulumi.com/project-slug: ${{values.organization }}/${{values.component_id}}+"-service"
+    pulumi.com/owner: ${{values.organization }}
 spec:
-  type: infrastructure
+  type: pulumi
   lifecycle: development
   owner: ${{values.owner | dump}}
