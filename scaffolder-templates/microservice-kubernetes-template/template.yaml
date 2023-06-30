@@ -14,7 +14,7 @@ metadata:
     - pulumi
     - microservice
     - kubernetes
-    - GitHub
+    - github
     - argocd
 spec:
   owner: user:dirien
