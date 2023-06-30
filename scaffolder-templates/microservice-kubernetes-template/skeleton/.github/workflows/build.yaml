@@ -17,6 +17,7 @@ jobs:
       contents: write
       id-token: write
       packages: write
+    {% raw %}
     steps:
       - uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791 # v2.5.0
         name: Checkout
@@ -32,17 +33,22 @@ jobs:
           context: microservice
           push: true
           tags: ${{ github.sha }},latest
+    {% endraw %}
   generate:
     name: Generate Kubernetes manifests
     runs-on: ubuntu-latest
     needs: build
+    permissions:
+      contents: write
+      id-token: write
+      packages: write
     steps:
       - uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791 # v2.5.0
         name: Checkout
       - uses: imranismail/setup-kustomize@6691bdeb1b0a3286fb7f70fd1423c10e81e5375f # v2.0.0
         name: Setup Kustomize
       - run: |
-          kustomize edit set image app:ghcr.io/${{values.destination.owner}}/${{values.component_id}}:${{ github.sha }}
+          kustomize edit set image app:ghcr.io/${{values.destination.owner}}/${{values.component_id}}:${{ '${{ github.sha }}' }}
           cat kustomization.yaml
           git config --local user.email "action@github.com"
           git config --local user.name "Deploy Action"
