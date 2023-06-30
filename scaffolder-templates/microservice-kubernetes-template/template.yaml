@@ -195,7 +195,7 @@ spec:
           "application-namespace": ${{ parameters.component_id }}
           "application-repo-path": microservice/kustomize
           "application-repo-url": "https://github.com/${{ (parameters.repoUrl | parseRepoUrl)['owner'] }}/${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}"
-          "application-repo-branch": main
+          "application-repo-target-revision": main
         stacks: ${{ parameters.stack }}
 
     - id: register
