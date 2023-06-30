@@ -104,6 +104,7 @@ spec:
           component_id: ${{ parameters.component_id }}
           description: ${{ parameters.description }}
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
+          organization: ediri
           owner: ${{ parameters.owner }}
 
     - id: pulumi-new-infrastructure
@@ -213,6 +214,6 @@ spec:
         icon: catalog
         entityRef: ${{ steps['register'].output.entityRef }}
     text:
-      - title: KubeConfig
+      - title: Kubernetes Configuration
         content: |
           `${{ steps['pulumi-deploy-infrastructure'].output.kubeconfig }}`
