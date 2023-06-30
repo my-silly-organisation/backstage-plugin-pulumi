@@ -159,6 +159,13 @@ spec:
       input:
         seconds: 29
 
+    - id: register
+      name: Registering the Catalog Info Component
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
+        catalogInfoPath: '/catalog-info.yaml'
+
     - id: pulumi-deploy-infrastructure
       name: Deploy Infrastructure (local)
       action: pulumi:run
@@ -198,13 +205,6 @@ spec:
           "application-repo-url": "https://github.com/${{ (parameters.repoUrl | parseRepoUrl)['owner'] }}/${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}"
           "application-repo-target-revision": main
         stacks: ${{ parameters.stack }}
-
-    - id: register
-      name: Registering the Catalog Info Component
-      action: catalog:register
-      input:
-        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
-        catalogInfoPath: '/catalog-info.yaml'
 
   output:
     links:
