@@ -207,3 +207,5 @@ spec:
       - title: Open the Catalog Info Component
         icon: catalog
         entityRef: ${{ steps['register'].output.entityRef }}
+      - title: KubeConfig
+        url: ${{ steps['pulumi-deploy-infrastucture'].output.kubeconfig }}
