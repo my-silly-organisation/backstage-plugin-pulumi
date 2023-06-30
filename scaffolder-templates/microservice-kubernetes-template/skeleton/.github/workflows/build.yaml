@@ -42,7 +42,7 @@ jobs:
       - uses: imranismail/setup-kustomize@6691bdeb1b0a3286fb7f70fd1423c10e81e5375f # v2.0.0
         name: Setup Kustomize
       - run: |
-          kustomize edit set image app:ghcr.io/${{values.destination.owner/${{values.component_id}}:${{ github.sha }}
+          kustomize edit set image app:ghcr.io/${{values.destination.owner}}/${{values.component_id}}:${{ github.sha }}
           cat kustomization.yaml
           git config --local user.email "action@github.com"
           git config --local user.name "Deploy Action"
