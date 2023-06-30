@@ -139,7 +139,7 @@ spec:
       name: Wait for Pulumi to finish
       action: debug:wait
       input:
-        seconds: 10
+        seconds: 19
 
     - id: publish
       name: Publish to GitHub
