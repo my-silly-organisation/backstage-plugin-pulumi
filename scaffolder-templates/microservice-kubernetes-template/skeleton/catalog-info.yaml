@@ -1,7 +1,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: ${{values.component_id}}+-infrastructure
+  name: ${{values.component_id}}-infrastructure
   {% if values.description %}
   description: ${{values.description | dump}}
   {% endif %}
@@ -16,7 +16,7 @@ spec:
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: ${{values.component_id}}+-service
+  name: ${{values.component_id}}-service
   {% if values.description %}
   description: ${{values.description | dump}}
   {% endif %}
