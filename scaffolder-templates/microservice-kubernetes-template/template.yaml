@@ -65,8 +65,8 @@ spec:
             - Python
           description: Programming language to use
         stack:
-          title: Select stacks
-          type: array
+          title: Select stack
+          type: string
           items:
             type: string
             enum:
@@ -78,11 +78,7 @@ spec:
               - Staging
               - Production
           uniqueItems: true
-          description: Stack to deploy to
-        args:
-          title: Pulumi CLI Arguments (optional)
-          type: string
-          description: Optional arguments to pass to the Pulumi CLI
+          description: The pulumi stack to use
     - title: Choose a location
       required:
         - repoUrl
@@ -115,11 +111,11 @@ spec:
         name: "${{ parameters.component_id }}-infrastructure"
         description: ${{ parameters.description | dump }}
         organization: ediri
-        stacks: ${{ parameters.stack }}
+        stack: ${{ parameters.stack }}
         template: "https://github.com/my-silly-organisation/microservice-civo/tree/main/infrastructure-${{ parameters.language }}"
         args:
-          - ${{ parameters.args }}
-          - "--dir infrastructure"
+          - "--dir"
+          - "infrastructure"
 
     - id: pulumi-new-service
       name: Create Service Pulumi Project
@@ -129,11 +125,11 @@ spec:
         name: "${{ parameters.component_id }}-service"
         description: ${{ parameters.description | dump }}
         organization: ediri
-        stacks: ${{ parameters.stack }}
+        stack: ${{ parameters.stack }}
         template: "https://github.com/my-silly-organisation/microservice-civo/tree/main/service-${{ parameters.language }}"
         args:
-          - ${{ parameters.args }}
-          - "--dir service"
+          - "--dir"
+          - "service"
 
     - id: wait
       name: Wait for Pulumi to finish
@@ -177,12 +173,13 @@ spec:
         repoUrl: "https://github.com/${{ (parameters.repoUrl | parseRepoUrl)['owner'] }}/${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}"
         repoProjectPath: infrastructure
         organization: ediri
+        secretConfig:
+          "civo:token": "${{ parameters.token}}"
         config:
           "civo:region": "lon1"
-          "civo:token": "${{ parameters.token}}"
         outputs:
           - kubeconfig
-        stacks: ${{ parameters.stack }}
+        stack: ${{ parameters.stack }}
 
 
     - id: pulumi-deploy-services
@@ -198,13 +195,13 @@ spec:
         repoBranch: main
         organization: ediri
         config:
-          "infra:stack-reference-name": "ediri/${{ parameters.component_id }}-infrastructure"
+          "infra:stack-reference-name": "ediri/${{ parameters.component_id }}-infrastructure:${{ parameters.stack }}"
           "application-name": ${{ parameters.component_id }}
           "application-namespace": ${{ parameters.component_id }}
           "application-repo-path": microservice/kustomize
           "application-repo-url": "https://github.com/${{ (parameters.repoUrl | parseRepoUrl)['owner'] }}/${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}"
           "application-repo-target-revision": main
-        stacks: ${{ parameters.stack }}
+        stack: ${{ parameters.stack }}
 
   output:
     links:
