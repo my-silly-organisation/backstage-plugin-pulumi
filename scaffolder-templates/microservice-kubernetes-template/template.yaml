@@ -110,9 +110,11 @@ spec:
         organization: ediri
         stack: ${{ parameters.stack }}
         template: "https://github.com/my-silly-organisation/microservice-civo/tree/main/infrastructure-${{ parameters.language }}"
-        args:
-          - "--dir"
-          - "infrastructure"
+        secretConfig:
+          "civo:token": "${{ parameters.token}}"
+        config:
+          "civo:region": "lon1"
+        folder: infrastructure
 
     - id: pulumi-new-service
       name: Create Service Pulumi Project
@@ -124,9 +126,14 @@ spec:
         organization: ediri
         stack: ${{ parameters.stack }}
         template: "https://github.com/my-silly-organisation/microservice-civo/tree/main/service-${{ parameters.language }}"
-        args:
-          - "--dir"
-          - "service"
+        config:
+          "infra:stack-reference-name": "ediri/${{ parameters.component_id }}-infrastructure:${{ parameters.stack }}"
+          "application-name": ${{ parameters.component_id }}
+          "application-namespace": ${{ parameters.component_id }}
+          "application-repo-path": microservice/kustomize
+          "application-repo-url": "https://github.com/${{ (parameters.repoUrl | parseRepoUrl)['owner'] }}/${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}"
+          "application-repo-target-revision": main
+        folder: service
 
     - id: wait
       name: Wait for Pulumi to finish
@@ -170,10 +177,6 @@ spec:
         repoUrl: "https://github.com/${{ (parameters.repoUrl | parseRepoUrl)['owner'] }}/${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}"
         repoProjectPath: infrastructure
         organization: ediri
-        secretConfig:
-          "civo:token": "${{ parameters.token}}"
-        config:
-          "civo:region": "lon1"
         outputs:
           - kubeconfig
         stack: ${{ parameters.stack }}
@@ -191,13 +194,6 @@ spec:
         repoProjectPath: service
         repoBranch: main
         organization: ediri
-        config:
-          "infra:stack-reference-name": "ediri/${{ parameters.component_id }}-infrastructure:${{ parameters.stack }}"
-          "application-name": ${{ parameters.component_id }}
-          "application-namespace": ${{ parameters.component_id }}
-          "application-repo-path": microservice/kustomize
-          "application-repo-url": "https://github.com/${{ (parameters.repoUrl | parseRepoUrl)['owner'] }}/${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}"
-          "application-repo-target-revision": main
         stack: ${{ parameters.stack }}
 
   output:
