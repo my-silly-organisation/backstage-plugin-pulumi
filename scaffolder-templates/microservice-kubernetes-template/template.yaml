@@ -206,4 +206,4 @@ spec:
     text:
       - title: Kubernetes Configuration
         content: |
-          `${{ steps['pulumi-deploy-infrastructure'].output.kubeconfig }}`
+          ${{ steps['pulumi-deploy-infrastructure'].output.kubeconfig }}
