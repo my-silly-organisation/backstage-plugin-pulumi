@@ -68,7 +68,7 @@ spec:
           title: Select stack
           type: string
           items:
-            type: string
+            type: array
             enum:
               - dev
               - staging
