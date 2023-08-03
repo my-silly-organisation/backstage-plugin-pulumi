@@ -67,17 +67,14 @@ spec:
         stack:
           title: Select stack
           type: string
-          items:
-            type: array
-            enum:
-              - dev
-              - staging
-              - prod
-            enumNames:
-              - Development
-              - Staging
-              - Production
-          uniqueItems: true
+          enum:
+            - dev
+            - staging
+            - prod
+          enumNames:
+            - Development
+            - Staging
+            - Production
           description: The pulumi stack to use
     - title: Choose a location
       required:
