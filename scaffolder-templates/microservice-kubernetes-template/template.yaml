@@ -129,7 +129,7 @@ spec:
           "infra:stack-reference-name": "ediri/${{ steps['fetchSystem'].output.entity.metadata.name }}/${{ parameters.stack }}"
           "application-name": ${{ parameters.component_id }}
           "application-namespace": ${{ parameters.component_id }}
-          "application-repo-path": microservice/kustomize
+          "application-repo-path": kustomize
           "application-repo-url": "https://github.com/${{ (parameters.repoUrl | parseRepoUrl)['owner'] }}/${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}"
           "application-repo-target-revision": main
         folder: service
