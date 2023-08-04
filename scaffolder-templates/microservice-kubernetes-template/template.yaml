@@ -95,7 +95,7 @@ spec:
       name: Fetch System
       action: catalog:fetch
       input:
-        entityRef: resource:default/${{ parameters.resource }}
+        entityRef: ${{ parameters.resource }}
     - id: template
       name: Create Project
       action: fetch:template
