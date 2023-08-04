@@ -26,6 +26,15 @@ spec:
           title: Description
           type: string
           description: Tell us more about this component.
+        system:
+          title: System
+          type: string
+          description: System this component belongs to.
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              kind:
+                - System
         owner:
           title: Owner
           type: string
@@ -223,6 +232,7 @@ spec:
           owner: ${{ parameters.owner }}
           cloud: ${{ parameters.cloud }}
           id: ${{ steps['pulumi-deploy-infrastructure'].output.ClusterId }}
+          system: ${{ parameters.system }}
 
     - id: publish
       name: Publish to GitHub
