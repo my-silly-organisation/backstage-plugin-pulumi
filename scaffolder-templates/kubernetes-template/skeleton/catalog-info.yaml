@@ -9,7 +9,7 @@ metadata:
       url: https://console.scaleway.com/kubernetes/clusters/${{values.id}}
       {%- elif values.cloud == "civo" %}
       url: https://dashboard.civo.com/kubernetes/${{values.id}}
-      {%- endif % }
+      {%- endif %}
     - title: Pulumi Console
       url: https://app.pulumi.com/${{values.organization}}/${{values.name}}/${{values.stack}}
 spec:
