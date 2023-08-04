@@ -1,21 +1,6 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: ${{values.component_id}}-infrastructure
-  {%- if values.description %}
-  description: ${{values.description | dump}}
-  {%- endif %}
-  annotations:
-    github.com/project-slug: ${{values.destination.owner + "/" + values.destination.repo}}
-    pulumi.com/owner: ${{values.organization }}
-spec:
-  type: service
-  lifecycle: development
-  owner: ${{values.owner | dump}}
----
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
   name: ${{values.component_id}}-service
   {%- if values.description %}
   description: ${{values.description | dump}}
@@ -27,20 +12,3 @@ spec:
   type: service
   lifecycle: development
   owner: ${{values.owner | dump}}
----
-apiVersion: backstage.io/v1alpha1
-kind: Resource
-metadata:
-  name: ${{values.component_id}}-kubernetes
-  description: The Kubernetes cluster for the ${{values.component_id}} service
-relations:
-  - type: dependencyOf
-    targetRef: component:default/${{values.component_id}}-infrastructure
-    target:
-      kind: Component
-      namespace: default
-      name: ${{values.component_id}}-infrastructure
-spec:
-  type: kubernetes
-  owner: ${{values.owner | dump}}
-  lifecycle: development

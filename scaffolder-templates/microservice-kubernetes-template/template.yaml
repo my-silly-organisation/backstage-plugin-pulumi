@@ -46,99 +46,15 @@ spec:
     - title: Configure Infrastructure
       required:
         - stack
-      dependencies:
-        kubernetes:
-          oneOf:
-            - properties:
-                kubernetes:
-                  const: small
-                nodeCount:
-                  title: Node Count
-                  type: number
-                  enum:
-                    - 1
-                  default: 1
-                  description: Number of nodes in the cluster
-            - properties:
-                kubernetes:
-                  const: medium
-                nodeCount:
-                  title: Node Count
-                  type: number
-                  enum:
-                    - 2
-                  default: 2
-                  description: Number of nodes in the cluster
-            - properties:
-                kubernetes:
-                  const: large
-                nodeCount:
-                  title: Node Count
-                  type: number
-                  enum:
-                    - 3
-                  default: 3
-                  description: Number of nodes in the cluster
-        cloud:
-          oneOf:
-            - properties:
-                cloud:
-                  const: civo
-                token:
-                  title: Civo API Token
-                  type: string
-                  description: Civo API Token
-                  ui:widget: password
-                region:
-                  title: Civo Region
-                  type: string
-                  description: Civo Region
-                  enum:
-                    - LON1
-                    - NYC1
-                    - FRA1
-                  default: LON1
-            - properties:
-                cloud:
-                  const: scw
-                accessKey:
-                  title: Scaleway Access Key
-                  type: string
-                  description: Scaleway Access Key
-                  ui:widget: password
-                secretKey:
-                  title: Scaleway Secret Key
-                  type: string
-                  description: Scaleway Secret Key
-                  ui:widget: password
-                projectID:
-                  title: Scaleway Project ID
-                  type: string
-                  description: Scaleway Project ID
       properties:
-        cloud:
-          title: Cloud Provider
+        resource:
+          title: Kubernetes Cluster
           type: string
-          enum:
-            - civo
-            - scw
-          enumNames:
-            - Civo
-            - Scaleway
-          description: Cloud provider to use
-        kubernetes:
-          title: Kubernetes Size (T-Shirt)
-          type: string
-          default: small
-          enum:
-            - small
-            - medium
-            - large
-          enumNames:
-            - Small
-            - Medium
-            - Large
-          description: Kubernetes cluster size in terms of specifications expressed as T-Shirt sizes (small, medium, large)
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              kind:
+                - Resource
         language:
           title: Programming Language
           type: string
@@ -175,6 +91,11 @@ spec:
             allowedHosts:
               - github.com
   steps:
+    - id: fetchSystem
+      name: Fetch System
+      action: catalog:fetch
+      input:
+        entityRef: resource:default/${{ parameters.resource }}
     - id: template
       name: Create Project
       action: fetch:template
@@ -187,26 +108,6 @@ spec:
           organization: ediri
           owner: ${{ parameters.owner }}
 
-    - id: pulumi-new-infrastructure
-      name: Create Infrastructure Pulumi Project
-      action: pulumi:run
-      input:
-        new: true
-        name: "${{ parameters.component_id }}-infrastructure"
-        description: ${{ parameters.description | dump }}
-        organization: ediri
-        stack: ${{ parameters.stack }}
-        template: "https://github.com/my-silly-organisation/microservice-civo/tree/main/infrastructure-${{ parameters.cloud }}-${{ parameters.language }}"
-        secretConfig:
-          "scaleway:secret_key": "${{ parameters.secretKey }}"
-          "civo:token": "${{ parameters.token}}"
-        config:
-          "scaleway:access_key": "${{ parameters.accessKey }}"
-          "scaleway:project_id": "${{ parameters.projectID }}"
-          "civo:region": "${{ parameters.region }}"
-          "node:node_count": "${{ parameters.nodeCount }}"
-        folder: infrastructure
-
     - id: pulumi-new-service
       name: Create Service Pulumi Project
       action: pulumi:run
@@ -218,7 +119,7 @@ spec:
         stack: ${{ parameters.stack }}
         template: "https://github.com/my-silly-organisation/microservice-civo/tree/main/service-${{ parameters.language }}"
         config:
-          "infra:stack-reference-name": "ediri/${{ parameters.component_id }}-infrastructure/${{ parameters.stack }}"
+          "infra:stack-reference-name": "ediri/${{ steps['fetchSystem'].output.entity.name }}/${{ parameters.stack }}"
           "application-name": ${{ parameters.component_id }}
           "application-namespace": ${{ parameters.component_id }}
           "application-repo-path": microservice/kustomize
@@ -256,22 +157,6 @@ spec:
       input:
         repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
         catalogInfoPath: '/catalog-info.yaml'
-
-    - id: pulumi-deploy-infrastructure
-      name: Deploy Infrastructure (local)
-      action: pulumi:run
-      input:
-        new: false
-        deployment: false
-        up: true
-        name: "${{ parameters.component_id }}-infrastructure"
-        repoUrl: "https://github.com/${{ (parameters.repoUrl | parseRepoUrl)['owner'] }}/${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}"
-        repoProjectPath: infrastructure
-        organization: ediri
-        outputs:
-          - kubeconfig
-        stack: ${{ parameters.stack }}
-
 
     - id: pulumi-deploy-services
       name: Deploy Services (via Deployment)
