@@ -1,0 +1,260 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: kubernetes-template
+  title: Kubernetes Cluster
+  description: |
+    A template for creating a new Kubernetes Cluster.
+  tags:
+    - pulumi
+    - kubernetes
+spec:
+  owner: user:dirien
+  type: infrastructure
+  parameters:
+    - title: Provide project information
+      required:
+        - component_id
+        - owner
+      properties:
+        component_id:
+          title: Name
+          type: string
+          description: Unique name of the component.
+          ui:field: EntityNamePicker
+        description:
+          title: Description
+          type: string
+          description: Tell us more about this component.
+        owner:
+          title: Owner
+          type: string
+          description: Owner of the component
+          ui:field: OwnerPicker
+          ui:options:
+            allowedKinds:
+              - Group
+              - User
+    - title: Configure Infrastructure
+      required:
+        - stack
+      dependencies:
+        kubernetes:
+          oneOf:
+            - properties:
+                kubernetes:
+                  const: small
+                nodeCount:
+                  title: Node Count
+                  type: number
+                  enum:
+                    - 1
+                  default: 1
+                  description: Number of nodes in the cluster
+            - properties:
+                kubernetes:
+                  const: medium
+                nodeCount:
+                  title: Node Count
+                  type: number
+                  enum:
+                    - 2
+                  default: 2
+                  description: Number of nodes in the cluster
+            - properties:
+                kubernetes:
+                  const: large
+                nodeCount:
+                  title: Node Count
+                  type: number
+                  enum:
+                    - 3
+                  default: 3
+                  description: Number of nodes in the cluster
+        cloud:
+          oneOf:
+            - properties:
+                cloud:
+                  const: civo
+                token:
+                  title: Civo API Token
+                  type: string
+                  description: Civo API Token
+                  ui:widget: password
+                region:
+                  title: Civo Region
+                  type: string
+                  description: Civo Region
+                  enum:
+                    - LON1
+                    - NYC1
+                    - FRA1
+                  default: LON1
+            - properties:
+                cloud:
+                  const: scw
+                accessKey:
+                  title: Scaleway Access Key
+                  type: string
+                  description: Scaleway Access Key
+                  ui:widget: password
+                secretKey:
+                  title: Scaleway Secret Key
+                  type: string
+                  description: Scaleway Secret Key
+                  ui:widget: password
+                projectID:
+                  title: Scaleway Project ID
+                  type: string
+                  description: Scaleway Project ID
+      properties:
+        cloud:
+          title: Cloud Provider
+          type: string
+          enum:
+            - civo
+            - scw
+          enumNames:
+            - Civo
+            - Scaleway
+          description: Cloud provider to use
+        kubernetes:
+          title: Kubernetes Size (T-Shirt)
+          type: string
+          default: small
+          enum:
+            - small
+            - medium
+            - large
+          enumNames:
+            - Small
+            - Medium
+            - Large
+          description: Kubernetes cluster size in terms of specifications expressed as T-Shirt sizes (small, medium, large)
+        language:
+          title: Programming Language
+          type: string
+          enum:
+            - go
+            - typescript
+            - python
+          enumNames:
+            - Go
+            - TypeScript
+            - Python
+          description: Programming language to use
+        stack:
+          title: Select stack
+          type: string
+          enum:
+            - dev
+            - staging
+            - prod
+          enumNames:
+            - Development
+            - Staging
+            - Production
+          description: The pulumi stack to use
+    - title: Choose a location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+  steps:
+    - id: pulumi-new-infrastructure
+      name: Create Infrastructure Pulumi Project
+      action: pulumi:run
+      input:
+        new: true
+        name: "${{ parameters.component_id }}-infrastructure"
+        description: ${{ parameters.description | dump }}
+        organization: ediri
+        stack: ${{ parameters.stack }}
+        template: "https://github.com/my-silly-organisation/microservice-civo/tree/main/infrastructure-${{ parameters.cloud }}-${{ parameters.language }}"
+        secretConfig:
+          "scaleway:secret_key": "${{ parameters.secretKey }}"
+          "civo:token": "${{ parameters.token}}"
+        config:
+          "scaleway:access_key": "${{ parameters.accessKey }}"
+          "scaleway:project_id": "${{ parameters.projectID }}"
+          "civo:region": "${{ parameters.region }}"
+          "node:node_count": "${{ parameters.nodeCount }}"
+        folder: .
+
+    - id: wait
+      name: Wait for Pulumi to finish
+      action: debug:wait
+      input:
+        seconds: 19
+
+    - id: pulumi-deploy-infrastructure
+      name: Deploy Infrastructure (local)
+      action: pulumi:run
+      input:
+        new: false
+        deployment: false
+        up: true
+        name: "${{ parameters.component_id }}-infrastructure"
+        repoUrl: "https://github.com/${{ (parameters.repoUrl | parseRepoUrl)['owner'] }}/${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}"
+        repoProjectPath: infrastructure
+        organization: ediri
+        outputs:
+          - kubeconfig
+          - ClusterId
+        stack: ${{ parameters.stack }}
+
+    - id: template
+      name: Create Project
+      action: fetch:template
+      input:
+        url: ./skeleton
+        values:
+          name: ${{ parameters.component_id }}
+          destination: ${{ parameters.repoUrl | parseRepoUrl }}
+          organization: ediri
+          stack: ${{ parameters.stack }}
+          owner: ${{ parameters.owner }}
+          cloud: ${{ parameters.cloud }}
+          id: ${{ steps['pulumi-deploy-infrastructure'].output.ClusterId }}
+
+    - id: publish
+      name: Publish to GitHub
+      action: publish:github
+      input:
+        allowedHosts: [ "github.com" ]
+        repoVisibility: public
+        description: "This is ${{ parameters.component_id }}"
+        repoUrl: ${{ parameters.repoUrl }}
+        defaultBranch: main
+        requiredApprovingReviewCount: 0
+        protectDefaultBranch: false
+
+    - id: wait2
+      name: Wait for Publish to finish
+      action: debug:wait
+      input:
+        seconds: 29
+
+    - id: register
+      name: Registering the Catalog Info Component
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
+        catalogInfoPath: '/catalog-info.yaml'
+
+  output:
+    links:
+      - title: Open the Source Code Repository
+        url: ${{ steps['publish'].output.repoContentsUrl }}
+      - title: Open the Catalog Info Component
+        icon: catalog
+        entityRef: ${{ steps['register'].output.entityRef }}
+    text:
+      - title: Kubernetes Configuration
+        content: ${{ steps['pulumi-deploy-infrastructure'].output.kubeconfig }}
