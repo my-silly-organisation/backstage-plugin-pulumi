@@ -61,11 +61,9 @@ spec:
           enum:
             - go
             - typescript
-            - python
           enumNames:
             - Go
             - TypeScript
-            - Python
           description: Programming language to use
         stack:
           title: Select stack

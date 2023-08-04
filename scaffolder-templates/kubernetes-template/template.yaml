@@ -57,7 +57,6 @@ spec:
                   type: number
                   enum:
                     - 1
-                  default: 1
                   description: Number of nodes in the cluster
             - properties:
                 kubernetes:
@@ -67,7 +66,6 @@ spec:
                   type: number
                   enum:
                     - 2
-                  default: 2
                   description: Number of nodes in the cluster
             - properties:
                 kubernetes:
@@ -77,7 +75,6 @@ spec:
                   type: number
                   enum:
                     - 3
-                  default: 3
                   description: Number of nodes in the cluster
         cloud:
           oneOf:
@@ -145,11 +142,9 @@ spec:
           enum:
             - go
             - typescript
-            - python
           enumNames:
             - Go
             - TypeScript
-            - Python
           description: Programming language to use
         stack:
           title: Select stack
