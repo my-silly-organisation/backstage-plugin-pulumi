@@ -2,11 +2,11 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: microservice-kubernetes-template
-  title: Microservice on Civo Kubernetes
+  title: Microservice on Kubernetes
   description: |
-    A template for creating a new Microservice on Civo Kubernetes.
+    A template for creating a new Microservice on Kubernetes.
     This template will create following components:
-    - Kubernetes cluster on Civo per stage
+    - Kubernetes cluster on the approved cloud provider
     - GitHub repository for the microservice
     - GitHub actions to build the microservice
     - ArgoCD to deploy the microservice
@@ -20,7 +20,7 @@ spec:
   owner: user:dirien
   type: infrastructure
   parameters:
-    - title: Provide project informations
+    - title: Provide project information
       required:
         - component_id
         - owner
@@ -46,12 +46,57 @@ spec:
     - title: Configure Infrastructure
       required:
         - stack
+      dependencies:
+        cloud:
+          oneOf:
+            - properties:
+                cloud:
+                  const: civo
+                token:
+                  title: Civo API Token
+                  type: string
+                  description: Civo API Token
+                  ui:widget: password
+            - properties:
+                cloud:
+                  const: scaleway
+                accessKey:
+                  title: Scaleway Access Key
+                  type: string
+                  description: Scaleway Access Key
+                  ui:widget: password
+                secretKey:
+                  title: Scaleway Secret Key
+                  type: string
+                  description: Scaleway Secret Key
+                  ui:widget: password
+                projectID:
+                  title: Scaleway Project ID
+                  type: string
+                  description: Scaleway Project ID
       properties:
-        token:
-          title: Civo API Token
+        cloud:
+          title: Cloud Provider
           type: string
-          description: Civo API Token
-          ui:widget: password
+          enum:
+            - civo
+            - scaleway
+          enumNames:
+            - Civo
+            - Scaleway
+          description: Cloud provider to use
+        kubernetes:
+          title: Kubernetes Size (T-Shirt)
+          type: string
+          enum:
+            - small
+            - medium
+            - large
+          enumNames:
+            - Small
+            - Medium
+            - Large
+          description: Kubernetes cluster size in terms of specifications expressed as T-Shirt sizes (small, medium, large)
         language:
           title: Programming Language
           type: string
@@ -109,7 +154,7 @@ spec:
         description: ${{ parameters.description | dump }}
         organization: ediri
         stack: ${{ parameters.stack }}
-        template: "https://github.com/my-silly-organisation/microservice-civo/tree/main/infrastructure-${{ parameters.language }}"
+        template: "https://github.com/my-silly-organisation/microservice-civo/tree/main/infrastructure-${{ parameters.cloud }}-${{ parameters.language }}"
         secretConfig:
           "civo:token": "${{ parameters.token}}"
         config:
