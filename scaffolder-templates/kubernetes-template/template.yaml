@@ -215,7 +215,7 @@ spec:
       input:
         url: ./skeleton
         values:
-          name: ${{ parameters.component_id }}
+          name:  ${{ steps['pulumi-deploy-infrastructure'].input.name }}
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
           organization: ediri
           stack: ${{ parameters.stack }}

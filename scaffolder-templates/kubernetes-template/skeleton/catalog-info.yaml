@@ -19,3 +19,25 @@ spec:
   type: kubernetes
   owner: ${{values.owner | dump}}
   lifecycle: experimental
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{values.name}}
+  { %- if values.description % }
+  description: ${{values.description | dump}}
+  { %- endif % }
+  annotations:
+    github.com/project-slug: ${{values.destination.owner + "/" + values.destination.repo}}
+    pulumi.com/owner: ${{values.organization }}
+relations:
+  - type: partOf
+    targetRef: system:default/${{values.name}}
+    target:
+      kind: system
+      namespace: default
+      name: ${{values.name}}
+spec:
+  type: service
+  lifecycle: experimental
+  owner: ${{values.owner | dump}}
