@@ -89,6 +89,15 @@ spec:
                   type: string
                   description: Civo API Token
                   ui:widget: password
+                region:
+                  title: Civo Region
+                  type: string
+                  description: Civo Region
+                  enum:
+                    - LON1
+                    - NYC1
+                    - FRA1
+                  default: LON1
             - properties:
                 cloud:
                   const: scw
@@ -194,7 +203,7 @@ spec:
         config:
           "scaleway:access_key": "${{ parameters.accessKey }}"
           "scaleway:project_id": "${{ parameters.projectID }}"
-          "civo:region": "lon1"
+          "civo:region": "${{ parameters.region }}"
           "node:node_count": "${{ parameters.nodeCount }}"
         folder: infrastructure
 
