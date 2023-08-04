@@ -54,7 +54,7 @@ spec:
                   const: small
                 nodeCount:
                   title: Node Count
-                  type: string
+                  type: number
                   enum:
                     - 1
                   default: 1
@@ -64,7 +64,7 @@ spec:
                   const: medium
                 nodeCount:
                   title: Node Count
-                  type: string
+                  type: number
                   enum:
                     - 2
                   default: 2
@@ -72,8 +72,13 @@ spec:
             - properties:
                 kubernetes:
                   const: large
-                default: 3
-                description: Number of nodes in the cluster
+                nodeCount:
+                  title: Node Count
+                  type: number
+                  enum:
+                    - 3
+                  default: 3
+                  description: Number of nodes in the cluster
         cloud:
           oneOf:
             - properties:
