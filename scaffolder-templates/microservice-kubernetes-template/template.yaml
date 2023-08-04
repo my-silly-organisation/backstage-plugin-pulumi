@@ -79,6 +79,14 @@ spec:
             - Staging
             - Production
           description: The pulumi stack to use
+        scanner:
+          title: Select scanner
+          type: string
+          enum:
+            - trivy
+          enumNames:
+            - Trivy
+          description: The scanner to use
     - title: Choose a location
       required:
         - repoUrl
@@ -108,6 +116,7 @@ spec:
           organization: ediri
           owner: ${{ parameters.owner }}
           dependsOn: ${{ parameters.resource }}
+          scanner: ${{ parameters.scanner }}
 
     - id: pulumi-new-service
       name: Create Service Pulumi Project
