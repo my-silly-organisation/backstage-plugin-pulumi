@@ -112,7 +112,7 @@ spec:
           type: string
           enum:
             - civo
-            - scaleway
+            - scw
           enumNames:
             - Civo
             - Scaleway
