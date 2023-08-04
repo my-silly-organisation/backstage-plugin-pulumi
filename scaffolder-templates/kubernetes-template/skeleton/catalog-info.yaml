@@ -33,4 +33,4 @@ spec:
   lifecycle: experimental
   owner: ${{values.owner | dump}}
   dependsOn:
-    - ${{values.name}}-cluster
+    - resource:default/${{values.name}}-cluster
