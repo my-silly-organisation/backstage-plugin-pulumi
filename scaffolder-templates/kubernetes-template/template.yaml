@@ -43,7 +43,6 @@ spec:
           ui:options:
             allowedKinds:
               - Group
-              - User
     - title: Configure Infrastructure
       required:
         - stack
