@@ -156,9 +156,25 @@ spec:
         stack: ${{ parameters.stack }}
         template: "https://github.com/my-silly-organisation/microservice-civo/tree/main/infrastructure-${{ parameters.cloud }}-${{ parameters.language }}"
         secretConfig:
-          "civo:token": "${{ parameters.token}}"
+        {% if parameters.cloud == "scaleway" %}
+            "scaleway:secret_key": "${{ parameters.secretKey }}"
+        {% else %}
+            "civo:token": "${{ parameters.token}}"
+        {% endif %}
         config:
+        {% if parameters.cloud == "scaleway" %}
+          "scaleway:access_key": "${{ parameters.accessKey }}"
+          "scaleway:project_id": "${{ parameters.projectID }}"
+        {% else %}
           "civo:region": "lon1"
+        {% endif %}
+        {% if parameters.kubernetes == "small" %}
+          "node:node_count": 1
+        {% elif parameters.kubernetes == "medium" %}
+          "node:node_count": 2
+        {% else %}
+          "node:node_count": 3
+        {% endif %}
         folder: infrastructure
 
     - id: pulumi-new-service
