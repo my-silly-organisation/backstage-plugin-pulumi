@@ -47,6 +47,33 @@ spec:
       required:
         - stack
       dependencies:
+        kubernetes:
+          oneOf:
+            - properties:
+                kubernetes:
+                  const: small
+                nodeCount:
+                  title: Node Count
+                  type: string
+                  enum:
+                    - 1
+                  default: 1
+                  description: Number of nodes in the cluster
+            - properties:
+                kubernetes:
+                  const: medium
+                nodeCount:
+                  title: Node Count
+                  type: string
+                  enum:
+                    - 2
+                  default: 2
+                  description: Number of nodes in the cluster
+            - properties:
+                kubernetes:
+                  const: large
+                default: 3
+                description: Number of nodes in the cluster
         cloud:
           oneOf:
             - properties:
@@ -88,6 +115,7 @@ spec:
         kubernetes:
           title: Kubernetes Size (T-Shirt)
           type: string
+          default: small
           enum:
             - small
             - medium
@@ -156,25 +184,13 @@ spec:
         stack: ${{ parameters.stack }}
         template: "https://github.com/my-silly-organisation/microservice-civo/tree/main/infrastructure-${{ parameters.cloud }}-${{ parameters.language }}"
         secretConfig:
-        {% if parameters.cloud == "scaleway" %}
-            "scaleway:secret_key": "${{ parameters.secretKey }}"
-        {% else %}
-            "civo:token": "${{ parameters.token}}"
-        {% endif %}
+          "scaleway:secret_key": "${{ parameters.secretKey }}"
+          "civo:token": "${{ parameters.token}}"
         config:
-        {% if parameters.cloud == "scaleway" %}
           "scaleway:access_key": "${{ parameters.accessKey }}"
           "scaleway:project_id": "${{ parameters.projectID }}"
-        {% else %}
           "civo:region": "lon1"
-        {% endif %}
-        {% if parameters.kubernetes == "small" %}
-          "node:node_count": 1
-        {% elif parameters.kubernetes == "medium" %}
-          "node:node_count": 2
-        {% else %}
-          "node:node_count": 3
-        {% endif %}
+          "node:node_count": "${{ parameters.nodeCount }}"
         folder: infrastructure
 
     - id: pulumi-new-service
