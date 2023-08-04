@@ -107,6 +107,7 @@ spec:
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
           organization: ediri
           owner: ${{ parameters.owner }}
+          dependsOn: ${{ parameters.resource }}
 
     - id: pulumi-new-service
       name: Create Service Pulumi Project
