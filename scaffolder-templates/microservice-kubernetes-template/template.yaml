@@ -119,7 +119,7 @@ spec:
         stack: ${{ parameters.stack }}
         template: "https://github.com/my-silly-organisation/microservice-civo/tree/main/service-${{ parameters.language }}"
         config:
-          "infra:stack-reference-name": "ediri/${{ steps['fetchSystem'].output.entity.name }}/${{ parameters.stack }}"
+          "infra:stack-reference-name": "ediri/${{ steps['fetchSystem'].output.entity | parseEntityName }}/${{ parameters.stack }}"
           "application-name": ${{ parameters.component_id }}
           "application-namespace": ${{ parameters.component_id }}
           "application-repo-path": microservice/kustomize
