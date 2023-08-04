@@ -3,6 +3,9 @@ kind: Resource
 metadata:
   name: ${{values.name}}
   description: The Kubernetes cluster for the ${{values.stack}}
+  annotations:
+    github.com/project-slug: ${{values.destination.owner + "/" + values.destination.repo}}
+    pulumi.com/owner: ${{values.organization }}
   links:
     - title: Cloud Console
       {%- if values.cloud == "scw" %}
@@ -24,16 +27,6 @@ metadata:
   {%- if values.description %}
   description: ${{values.description | dump}}
   {%- endif %}
-  annotations:
-    github.com/project-slug: ${{values.destination.owner + "/" + values.destination.repo}}
-    pulumi.com/owner: ${{values.organization }}
-relations:
-  - type: partOf
-    targetRef: system:default/${{values.name}}
-    target:
-      kind: system
-      namespace: default
-      name: ${{values.name}}
 spec:
   type: service
   lifecycle: experimental
