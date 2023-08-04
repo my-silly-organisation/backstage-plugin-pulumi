@@ -3,9 +3,6 @@ kind: Resource
 metadata:
   name: ${{values.name}}
   description: The Kubernetes cluster for the ${{values.stack}}
-  annotations:
-    github.com/project-slug: ${{values.destination.owner + "/" + values.destination.repo}}
-    pulumi.com/owner: ${{values.organization }}
   links:
     - title: Cloud Console
       {%- if values.cloud == "scw" %}
