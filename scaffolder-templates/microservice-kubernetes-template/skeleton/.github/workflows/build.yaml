@@ -60,7 +60,7 @@ jobs:
       {%- if values.scanner == 'trivy' %}
       - run: |
           kustomize build . -o $RUNNER_TEMP/test.yaml
-          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.18.3
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.44.0
           trivy config  $RUNNER_TEMP/test.yaml  --exit-code 0
         name: Check for misconfigurations
         working-directory: kustomize
