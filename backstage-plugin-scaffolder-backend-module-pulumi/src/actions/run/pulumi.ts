@@ -2,7 +2,9 @@ import {createTemplateAction} from "@backstage/plugin-scaffolder-node";
 import {RemoteWorkspace, fullyQualifiedStackName, LocalWorkspace} from "@pulumi/pulumi/automation";
 import {InputError} from '@backstage/errors';
 
-const {exec} = require('child_process');
+import {
+    executeShellCommand,
+} from '@backstage/plugin-scaffolder-backend';
 
 export function createRunPulumiAction() {
     return createTemplateAction<{
@@ -17,10 +19,12 @@ export function createRunPulumiAction() {
         repoBranch: string
         repoProjectPath: string
         template: string;
-        stacks: string[];
+        stack: string;
         config: object;
+        secretConfig: object;
         outputs: string[];
         args: string[];
+        folder: string;
     }>({
             id: 'pulumi:run',
             description: 'Runs Pulumi',
@@ -53,10 +57,10 @@ export function createRunPulumiAction() {
                             description: 'The Pulumi template to use, this can be a built-in template or a URL to a template',
                             type: 'string',
                         },
-                        stacks: {
-                            title: 'Pulumi stacks',
-                            description: 'The list of Pulumi stacks to use for the Pulumi commands',
-                            type: 'array',
+                        stack: {
+                            title: 'Pulumi stack',
+                            description: 'The Pulumi stack to use',
+                            type: 'string',
                         },
                         organization: {
                             title: 'Pulumi organization',
@@ -76,6 +80,11 @@ export function createRunPulumiAction() {
                         config: {
                             title: 'Pulumi project config',
                             description: 'The Pulumi project config to use',
+                            type: 'object',
+                        },
+                        secretConfig: {
+                            title: 'Pulumi project secret config',
+                            description: 'The Pulumi project secret config to use',
                             type: 'object',
                         },
                         outputs: {
@@ -106,6 +115,11 @@ export function createRunPulumiAction() {
                                 type: 'string',
                             }
                         },
+                        folder: {
+                            title: 'The folder to run Pulumi in',
+                            description: 'The folder to run Pulumi in',
+                            type: 'string',
+                        }
                     },
                 },
             },
@@ -114,11 +128,11 @@ export function createRunPulumiAction() {
                     `Running Pulumi`,
                 );
 
-                await process.chdir(ctx.workspacePath);
-                ctx.logger.info('Working directory: ' + process.cwd());
+                //process.chdir(ctx.workspacePath);
+                ctx.logger.info('Working directory: ' + ctx.workspacePath);
 
-                if (ctx.input.stacks.length == 0) {
-                    throw new InputError('No Pulumi stacks specified, please specify at least one stack');
+                if (ctx.input.stack == null) {
+                    throw new InputError('No Pulumi stack specified, please specify a stack');
                 }
                 if (!ctx.input.organization) {
                     throw new InputError('No Pulumi organization specified, please specify an organization');
@@ -127,19 +141,58 @@ export function createRunPulumiAction() {
                 // currently automation api does not support pulumi new
                 if (ctx.input.new) {
                     ctx.logger.info(`Running pulumi new...`);
-                    const stackName = ctx.input.organization + '/' + ctx.input.stacks[0];
+                    const stackName = ctx.input.organization + '/' + ctx.input.stack;
                     ctx.logger.info(`Creating stack ${stackName}...`)
-                    await exec(`pulumi new ${ctx.input.template} ${ctx.input.args.join(' ')} --yes --force -n ${ctx.input.name} -d ${ctx.input.description} -s ${stackName}`, (error: {
-                        message: any;
-                    }, stdout: any, stderr: any) => {
-                        if (error) {
-                            throw new Error(error.message);
-                        }
-                        if (stderr) {
-                            throw new Error(stderr);
-                        }
-                        ctx.logger.info(`${stdout}`);
+
+                    const args = ['new', ctx.input.template, '--yes', '--force', '-n', ctx.input.name, '-d', ctx.input.description, '-s', stackName, '--dir', ctx.input.folder];
+
+                    if (ctx.input.args) {
+                        const additionalArgs = ctx.input.args.flatMap(x => x ? [x] : []);
+                        args.push(...additionalArgs);
+                    }
+
+                    const argsString = args.map(x => `${x}`).join(' ');
+
+                    ctx.logger.info(
+                        `Running "pulumi ${argsString}" in ${ctx.workspacePath}`,
+                    );
+
+                    await executeShellCommand({
+                        command: 'pulumi',
+                        args: args,
+                        options: {
+                            cwd: ctx.workspacePath,
+                        },
+                        logStream: ctx.logStream,
                     });
+                    if (ctx.input.config) {
+                        for (const [key, value] of Object.entries(ctx.input.config)) {
+                            if (value != null) {
+                                await executeShellCommand({
+                                    command: 'pulumi',
+                                    args: ['config', 'set', key, value, '--stack', stackName, '--plaintext', '--non-interactive', '--cwd', ctx.input.folder],
+                                    options: {
+                                        cwd: ctx.workspacePath,
+                                    },
+                                    logStream: ctx.logStream,
+                                });
+                            }
+                        }
+                    }
+                    if (ctx.input.secretConfig) {
+                        for (const [key, value] of Object.entries(ctx.input.secretConfig)) {
+                            if (value != null) {
+                                await executeShellCommand({
+                                    command: 'pulumi',
+                                    args: ['config', 'set', key, value, '--stack', stackName, '--secret', '--non-interactive', '--cwd', ctx.input.folder],
+                                    options: {
+                                        cwd: ctx.workspacePath,
+                                    },
+                                    logStream: ctx.logStream,
+                                });
+                            }
+                        }
+                    }
                 } else {
                     if (!ctx.input.repoUrl) {
                         throw new InputError('No Pulumi project repo URL specified, please specify a repo URL');
@@ -150,31 +203,27 @@ export function createRunPulumiAction() {
                     }
                     ctx.logger.info(`repoProjectPath: ${ctx.input.repoProjectPath}`)
                     if (!ctx.input.deployment) {
-                        for (const stack of ctx.input.stacks) {
-                            const stackName = fullyQualifiedStackName(ctx.input.organization, ctx.input.name, stack)
-                            const s = await LocalWorkspace.createOrSelectStack({
-                                stackName: stackName,
-                                workDir: ctx.workspacePath + "/" + ctx.input.repoProjectPath,
-                            })
-                            for (const [key, value] of Object.entries(ctx.input.config)) {
-                                await s.setConfig(key, {value: value})
-                            }
-                            ctx.logger.info(`Successfully initialized stack ${s.name}`)
-                            ctx.logger.info(`Refreshing stack ${s.name}...`)
-                            await s.refresh({onOutput: ctx.logger.info})
-                            ctx.logger.info(`Successfully refreshed stack ${s.name}`)
+                        const stackName = fullyQualifiedStackName(ctx.input.organization, ctx.input.name, ctx.input.stack);
+                        const s = await LocalWorkspace.createOrSelectStack({
+                            stackName: stackName,
+                            workDir: ctx.workspacePath + "/" + ctx.input.repoProjectPath,
+                        })
 
-                            if (ctx.input.destroy) {
-                                ctx.logger.info(`Destroying stack ${s.name}...`)
-                                await s.destroy({onOutput: ctx.logger.info})
-                                ctx.logger.info(`Successfully destroyed stack ${s.name}`)
-                            } else if (ctx.input.up) {
-                                ctx.logger.info(`Updating stack ${s.name}...`)
-                                const up = await s.up({onOutput: ctx.logger.info, showSecrets: true})
-                                ctx.logger.info(`update summary: ${JSON.stringify(up.summary.resourceChanges, null, 4)}`)
-                                for (const output of ctx.input.outputs) {
-                                    ctx.output(output, up.outputs[output].value)
-                                }
+                        ctx.logger.info(`Successfully initialized stack ${s.name}`)
+                        ctx.logger.info(`Refreshing stack ${s.name}...`)
+                        await s.refresh({onOutput: ctx.logger.info})
+                        ctx.logger.info(`Successfully refreshed stack ${s.name}`)
+
+                        if (ctx.input.destroy) {
+                            ctx.logger.info(`Destroying stack ${s.name}...`)
+                            await s.destroy({onOutput: ctx.logger.info})
+                            ctx.logger.info(`Successfully destroyed stack ${s.name}`)
+                        } else if (ctx.input.up) {
+                            ctx.logger.info(`Updating stack ${s.name}...`)
+                            const up = await s.up({onOutput: ctx.logger.info, showSecrets: true})
+                            ctx.logger.info(`update summary: ${JSON.stringify(up.summary.resourceChanges, null, 4)}`)
+                            for (const output of ctx.input.outputs) {
+                                ctx.output(output, up.outputs[output].value)
                             }
                         }
                     } else {
@@ -182,17 +231,7 @@ export function createRunPulumiAction() {
                             throw new InputError('No Pulumi project repo branch specified, please specify a repo branch');
                         }
                         ctx.logger.info(`repoBranch: ${ctx.input.repoBranch}`)
-                        const stack = ctx.input.stacks[0]
-                        const stackName = fullyQualifiedStackName(ctx.input.organization, ctx.input.name, stack)
-
-                        const configs = [];
-                        for (const [key, value] of Object.entries(ctx.input.config)) {
-                            if (key === "infra:stack-reference-name") {
-                                configs.push(`pulumi config set ${key} --stack ${stackName} --plaintext --non-interactive -- ${value}/${stack}`)
-                            } else {
-                                configs.push(`pulumi config set ${key} --stack ${stackName} --plaintext --non-interactive -- ${value}`)
-                            }
-                        }
+                        const stackName = fullyQualifiedStackName(ctx.input.organization, ctx.input.name, ctx.input.stack);
 
                         const remoteStack = await RemoteWorkspace.createOrSelectStack({
                             stackName: stackName,
@@ -200,7 +239,7 @@ export function createRunPulumiAction() {
                             branch: "refs/heads/" + ctx.input.repoBranch,
                             projectPath: ctx.input.repoProjectPath,
                         }, {
-                            preRunCommands: configs,
+                            //preRunCommands: configs,
                         })
                         ctx.logger.info(`Successfully initialized stack ${remoteStack.name}`)
                         ctx.logger.info(`Refreshing stack ${remoteStack.name}...`)
