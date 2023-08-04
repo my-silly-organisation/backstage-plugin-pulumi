@@ -91,7 +91,7 @@ spec:
                   ui:widget: password
             - properties:
                 cloud:
-                  const: scaleway
+                  const: scw
                 accessKey:
                   title: Scaleway Access Key
                   type: string
