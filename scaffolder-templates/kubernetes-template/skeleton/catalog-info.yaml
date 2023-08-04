@@ -5,11 +5,11 @@ metadata:
   description: The Kubernetes cluster for the ${{values.stack}}
   links:
     - title: Cloud Console
-      { %- if values.cloud == "scw" % }
+      {%- if values.cloud == "scw" %}
       url: https://console.scaleway.com/kubernetes/clusters/${{values.id}}
-      { %- elif values.cloud == "civo" % }
+      {%- elif values.cloud == "civo" %}
       url: https://dashboard.civo.com/kubernetes/${{values.id}}
-      { %- endif % }
+      {%- endif % }
     - title: Pulumi Console
       url: https://app.pulumi.com/${{values.organization}}/${{values.name}}/${{values.stack}}
 spec:
@@ -22,9 +22,9 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: ${{values.name}}
-  { %- if values.description % }
+  {%- if values.description %}
   description: ${{values.description | dump}}
-  { %- endif % }
+  {%- endif %}
   annotations:
     github.com/project-slug: ${{values.destination.owner + "/" + values.destination.repo}}
     pulumi.com/owner: ${{values.organization }}
