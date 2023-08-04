@@ -1,7 +1,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: Resource
 metadata:
-  name: ${{values.name}}-cluster
+  name: ${{values.name}}
   description: The Kubernetes cluster for the ${{values.stack}}
   links:
     - title: Cloud Console
@@ -33,4 +33,4 @@ spec:
   lifecycle: experimental
   owner: ${{values.owner | dump}}
   dependsOn:
-    - resource:default/${{values.name}}-cluster
+    - resource:default/${{values.name}}
