@@ -1,7 +1,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: Resource
 metadata:
-  name: ${{values.namme}}
+  name: ${{values.name}}
   description: The Kubernetes cluster for the ${{values.stack}}
   annotations:
     github.com/project-slug: ${{values.destination.owner + "/" + values.destination.repo}}
@@ -13,6 +13,8 @@ metadata:
       {%- elif values.cloud == "civo" %}
       url: https://dashboard.civo.com/kubernetes/${{values.id}}
       {%- endif %}
+    - title: Pulumi Console
+      url: https://app.pulumi.com/${{values.organization}}/${{values.name}}/${{values.stack}}
 spec:
   type: kubernetes
   owner: ${{values.owner | dump}}
