@@ -202,7 +202,7 @@ spec:
         up: true
         name: "${{ parameters.component_id }}-infrastructure"
         repoUrl: "https://github.com/${{ (parameters.repoUrl | parseRepoUrl)['owner'] }}/${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}"
-        repoProjectPath: infrastructure
+        repoProjectPath: .
         organization: ediri
         outputs:
           - kubeconfig
