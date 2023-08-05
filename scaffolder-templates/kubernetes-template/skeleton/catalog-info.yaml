@@ -27,7 +27,7 @@ metadata:
   {%- endif %}
   annotations:
     github.com/project-slug: ${{values.destination.owner + "/" + values.destination.repo}}
-    pulumi.com/owner: ${{values.organization }}
+    pulumi.com/owner: ${{values.organization + "/" + values.name + "/" + values.stack}}
 spec:
   type: service
   lifecycle: experimental

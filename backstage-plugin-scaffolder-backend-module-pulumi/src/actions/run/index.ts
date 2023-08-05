@@ -1,1 +1,0 @@
-export {createRunPulumiAction} from './pulumi';

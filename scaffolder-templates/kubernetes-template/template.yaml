@@ -172,7 +172,7 @@ spec:
   steps:
     - id: pulumi-new-infrastructure
       name: Cookie cut the infrastructure Pulumi project
-      action: pulumi:run
+      action: pulumi:up
       input:
         new: true
         name: "${{ parameters.component_id }}-infrastructure"
@@ -198,7 +198,7 @@ spec:
 
     - id: pulumi-deploy-infrastructure
       name: Deploy the infrastructure using Pulumi CLI
-      action: pulumi:run
+      action: pulumi:up
       input:
         new: false
         deployment: false

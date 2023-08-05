@@ -101,6 +101,7 @@ spec:
       action: catalog:fetch
       input:
         entityRef: ${{ parameters.resource }}
+
     - id: template
       name: Create Project
       action: fetch:template
@@ -117,7 +118,7 @@ spec:
 
     - id: pulumi-new-service
       name: Create Service Pulumi Project
-      action: pulumi:run
+      action: pulumi:up
       input:
         new: true
         name: "${{ parameters.component_id }}-service"
@@ -167,7 +168,7 @@ spec:
 
     - id: pulumi-deploy-services
       name: Deploy Services (via Deployment)
-      action: pulumi:run
+      action: pulumi:up
       input:
         new: false
         deployment: true
