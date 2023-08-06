@@ -15,7 +15,6 @@ export function pulumiNewAction() {
         description: string;
         config: object;
         secretConfig: object;
-        outputs: string[];
         args: string[];
         folder: string;
     }>({
@@ -26,13 +25,12 @@ export function pulumiNewAction() {
                     z.object({
                         template: z.string({description: 'The Pulumi template to use, this can be a built-in template or a URL to a template'}),
                         description: z.string({description: 'The Pulumi project description to use'}).optional(),
-                        config: z.record(z.string(),{description: 'The Pulumi project config to use'}).optional(),
-                        secretConfig: z.record(z.string(), {description: 'The Pulumi project secret config to use'}).optional(),
+                        config: z.record(z.union([z.string(), z.number()]), {description: 'The Pulumi project config to use'}).optional(),
+                        secretConfig: z.record(z.union([z.string(), z.number()]), {description: 'The Pulumi project secret config to use'}).optional(),
                         args: z.array(z.string(), {description: 'The Pulumi command arguments to run'}).optional(),
                         folder: z.string({description: 'The folder to run Pulumi in'}),
                     }),
                 ),
-                output: z.array(z.string(), {description: 'The Pulumi outputs to use'}),
             },
             async handler(ctx) {
                 ctx.logger.info('Executing pulumi:new action');

@@ -81,11 +81,6 @@ spec:
             - properties:
                 cloud:
                   const: civo
-                token:
-                  title: Civo API Token
-                  type: string
-                  description: Civo API Token
-                  ui:widget: password
                 region:
                   title: Civo Region
                   type: string
@@ -98,16 +93,6 @@ spec:
             - properties:
                 cloud:
                   const: scw
-                accessKey:
-                  title: Scaleway Access Key
-                  type: string
-                  description: Scaleway Access Key
-                  ui:widget: password
-                secretKey:
-                  title: Scaleway Secret Key
-                  type: string
-                  description: Scaleway Secret Key
-                  ui:widget: password
                 projectID:
                   title: Scaleway Project ID
                   type: string
@@ -179,11 +164,7 @@ spec:
         organization: ediri
         stack: ${{ parameters.stack }}
         template: "https://github.com/my-silly-organisation/microservice-civo/tree/main/infrastructure-${{ parameters.cloud }}-${{ parameters.language }}"
-        secretConfig:
-          "scaleway:secret_key": "${{ parameters.secretKey }}"
-          "civo:token": "${{ parameters.token}}"
         config:
-          "scaleway:access_key": "${{ parameters.accessKey }}"
           "scaleway:project_id": "${{ parameters.projectID }}"
           "civo:region": "${{ parameters.region }}"
           "node:node_count": "${{ parameters.nodeCount }}"
@@ -193,15 +174,13 @@ spec:
       name: Wait for the infrastructure template to be created
       action: debug:wait
       input:
-        seconds: 29
+        seconds: 9
 
     - id: pulumi-deploy-infrastructure
       name: Deploy the infrastructure using Pulumi CLI
       action: pulumi:up
       input:
-        new: false
         deployment: false
-        up: true
         name: "${{ parameters.component_id }}-infrastructure"
         repoUrl: "https://github.com/${{ (parameters.repoUrl | parseRepoUrl)['owner'] }}/${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}"
         repoProjectPath: .
@@ -261,4 +240,5 @@ spec:
         entityRef: ${{ steps['register'].output.entityRef }}
     text:
       - title: Kubernetes Configuration
-        content: ${{ steps['pulumi-deploy-infrastructure'].output.kubeconfig }}
+        content: |
+          `${{ steps['pulumi-deploy-infrastructure'].output.kubeconfig }}`
