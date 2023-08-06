@@ -1,5 +1,4 @@
 import {createTemplateAction} from "@backstage/plugin-scaffolder-node";
-import {InputError} from '@backstage/errors';
 
 import {
     executeShellCommand,
@@ -39,12 +38,6 @@ export function pulumiNewAction() {
                 ctx.logger.info('Executing pulumi:new action');
                 ctx.logger.info('Working directory: ' + ctx.workspacePath);
 
-                if (ctx.input.stack == null) {
-                    throw new InputError('No Pulumi stack specified, please specify a stack');
-                }
-                if (!ctx.input.organization) {
-                    throw new InputError('No Pulumi organization specified, please specify an organization');
-                }
                 const stackName = ctx.input.organization + '/' + ctx.input.stack;
                 ctx.logger.info(`Creating stack ${stackName}...`)
 
