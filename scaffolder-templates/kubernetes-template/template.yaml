@@ -56,7 +56,7 @@ spec:
                   title: Node Count
                   type: string
                   enum:
-                    - 1
+                    - "1"
                   description: Number of nodes in the cluster
             - properties:
                 kubernetes:
@@ -65,7 +65,7 @@ spec:
                   title: Node Count
                   type: string
                   enum:
-                    - 2
+                    - "2"
                   description: Number of nodes in the cluster
             - properties:
                 kubernetes:
@@ -74,7 +74,7 @@ spec:
                   title: Node Count
                   type: string
                   enum:
-                    - 3
+                    - "3"
                   description: Number of nodes in the cluster
         cloud:
           oneOf:
