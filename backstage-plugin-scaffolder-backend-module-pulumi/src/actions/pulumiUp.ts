@@ -2,7 +2,7 @@ import {createTemplateAction} from "@backstage/plugin-scaffolder-node";
 import {RemoteWorkspace, fullyQualifiedStackName, LocalWorkspace} from "@pulumi/pulumi/automation";
 import {InputError} from '@backstage/errors';
 
-export function createRunPulumiAction() {
+export function pulumiUpAction() {
     return createTemplateAction<{
         new: boolean
         up: boolean

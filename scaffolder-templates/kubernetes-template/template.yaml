@@ -170,12 +170,10 @@ spec:
             allowedHosts:
               - github.com
   steps:
-    - id: pulumi-new-infrastructure
-      name: Cookie cut the infrastructure Pulumi project
-      action: pulumi:up
+    - id: pulumi-new-component
+      name: Cookie cut the component Pulumi project
+      action: pulumi:new
       input:
-        new: true
-        name: "${{ parameters.component_id }}-infrastructure"
         description: ${{ parameters.description | dump }}
         organization: ediri
         stack: ${{ parameters.stack }}
@@ -194,7 +192,7 @@ spec:
       name: Wait for the infrastructure template to be created
       action: debug:wait
       input:
-        seconds: 9
+        seconds: 29
 
     - id: pulumi-deploy-infrastructure
       name: Deploy the infrastructure using Pulumi CLI

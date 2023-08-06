@@ -5,5 +5,5 @@
  * @packageDocumentation
  */
 
-export * from './actions/pulumiUpAction';
-export * from './actions/pulumiNewAction';
+export * from './actions/pulumiUp';
+export * from './actions/pulumiNew';
