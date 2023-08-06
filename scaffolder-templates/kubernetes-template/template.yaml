@@ -54,7 +54,7 @@ spec:
                   const: small
                 nodeCount:
                   title: Node Count
-                  type: number
+                  type: string
                   enum:
                     - 1
                   description: Number of nodes in the cluster
@@ -63,7 +63,7 @@ spec:
                   const: medium
                 nodeCount:
                   title: Node Count
-                  type: number
+                  type: string
                   enum:
                     - 2
                   description: Number of nodes in the cluster
@@ -72,7 +72,7 @@ spec:
                   const: large
                 nodeCount:
                   title: Node Count
-                  type: number
+                  type: string
                   enum:
                     - 3
                   description: Number of nodes in the cluster

@@ -1,7 +1,7 @@
 {
   "name": "backstage-plugin-scaffolder-backend-module-pulumi",
   "description": "The pulumi module for @backstage/plugin-scaffolder-backend",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "main": "dist/index.cjs.js",
   "types": "dist/index.d.ts",
   "license": "Apache-2.0",
