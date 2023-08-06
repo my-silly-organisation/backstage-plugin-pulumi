@@ -26,8 +26,8 @@ export function pulumiNewAction() {
                     z.object({
                         template: z.string({description: 'The Pulumi template to use, this can be a built-in template or a URL to a template'}),
                         description: z.string({description: 'The Pulumi project description to use'}).optional(),
-                        config: z.record(z.string(), z.string(), {description: 'The Pulumi project config to use'}).optional(),
-                        secretConfig: z.record(z.string(), z.string(), {description: 'The Pulumi project secret config to use'}).optional(),
+                        config: z.record(z.string(),{description: 'The Pulumi project config to use'}).optional(),
+                        secretConfig: z.record(z.string(), {description: 'The Pulumi project secret config to use'}).optional(),
                         args: z.array(z.string(), {description: 'The Pulumi command arguments to run'}).optional(),
                         folder: z.string({description: 'The folder to run Pulumi in'}),
                     }),
