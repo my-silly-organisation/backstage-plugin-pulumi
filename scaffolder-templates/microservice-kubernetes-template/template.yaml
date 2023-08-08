@@ -108,10 +108,11 @@ spec:
       input:
         url: ./skeleton
         values:
-          component_id: ${{ parameters.component_id }}
+          name: "${{ parameters.component_id }}-service"
           description: ${{ parameters.description }}
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
           organization: ediri
+          stack: ${{ parameters.stack }}
           owner: ${{ parameters.owner }}
           dependsOn: ${{ parameters.resource }}
           scanner: ${{ parameters.scanner }}
