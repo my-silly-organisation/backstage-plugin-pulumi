@@ -4,7 +4,7 @@ resources:
   - deployment.yaml
   - services.yaml
 
-namespace: ${{values.component_id}}
+namespace: ${{values.name}}
 
 images:
   - name: goapp

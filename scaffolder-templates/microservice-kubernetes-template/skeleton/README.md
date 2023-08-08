@@ -1,8 +1,8 @@
-# ${{values.component_id }} Microservice
+# ${{values.name }} Microservice
 
 ## Description
 
-This is a microservice for ${{values.component_id }}. It is written in Go.
+This is a microservice for ${{values.name }}. It is written in Go.
 
 ## Usage
 
