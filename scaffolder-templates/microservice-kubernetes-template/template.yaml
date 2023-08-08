@@ -118,9 +118,8 @@ spec:
 
     - id: pulumi-new-service
       name: Create Service Pulumi Project
-      action: pulumi:up
+      action: pulumi:new
       input:
-        new: true
         name: "${{ parameters.component_id }}-service"
         description: ${{ parameters.description | dump }}
         organization: ediri
@@ -139,7 +138,7 @@ spec:
       name: Wait for Pulumi to finish
       action: debug:wait
       input:
-        seconds: 19
+        seconds: 9
 
     - id: publish
       name: Publish to GitHub
@@ -170,9 +169,7 @@ spec:
       name: Deploy Services (via Deployment)
       action: pulumi:up
       input:
-        new: false
         deployment: true
-        up: true
         name: "${{ parameters.component_id }}-service"
         repoUrl: "https://github.com/${{ (parameters.repoUrl | parseRepoUrl)['owner'] }}/${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}"
         repoProjectPath: service
@@ -187,6 +184,3 @@ spec:
       - title: Open the Catalog Info Component
         icon: catalog
         entityRef: ${{ steps['register'].output.entityRef }}
-    text:
-      - title: Kubernetes Configuration
-        content: ${{ steps['pulumi-deploy-infrastructure'].output.kubeconfig }}

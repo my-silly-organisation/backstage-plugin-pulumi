@@ -27,10 +27,11 @@ metadata:
   {%- endif %}
   annotations:
     github.com/project-slug: ${{values.destination.owner + "/" + values.destination.repo}}
-    pulumi.com/owner: ${{values.organization + "/" + values.name + "/" + values.stack}}
+    pulumi.com/project-slug: ${{values.organization + "/" + values.name + "/" + values.stack}}
 spec:
   type: service
   lifecycle: experimental
   owner: ${{values.owner | dump}}
+  system: ${{values.system}}
   dependsOn:
     - resource:default/${{values.name}}
