@@ -76,10 +76,12 @@ export function pulumiUpAction() {
 
                     // If we are using Pulumi Deployment, we need to set the provider credentials from the environment variables
                     // and pas them as envVars to the RemoteWorkspace.createOrSelectStack method
-                    var configCredentialsObject: { [k: string]: any } = {};
-                    for (const providerCredentialEnvName of ctx.input.providerCredentialsFromEnv) {
-                        configCredentialsObject[providerCredentialEnvName] = {
-                            secret: process.env[providerCredentialEnvName]
+                    let configCredentialsObject: { [k: string]: any } = {};
+                    if (ctx.input.providerCredentialsFromEnv != null) {
+                        for (const providerCredentialEnvName of ctx.input.providerCredentialsFromEnv) {
+                            configCredentialsObject[providerCredentialEnvName] = {
+                                secret: process.env[providerCredentialEnvName]
+                            }
                         }
                     }
                     const remoteStack = await RemoteWorkspace.createOrSelectStack({
@@ -98,7 +100,6 @@ export function pulumiUpAction() {
                     ctx.logger.info(`Updating stack ${remoteStack.name}...`)
                     const up = await remoteStack.up({onOutput: ctx.logger.info})
                     ctx.logger.info(`update summary: ${JSON.stringify(up.summary.resourceChanges, null, 4)}`)
-
                 }
             }
         }
