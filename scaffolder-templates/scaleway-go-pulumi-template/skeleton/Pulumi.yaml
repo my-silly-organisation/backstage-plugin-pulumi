@@ -1,3 +1,0 @@
-name: ${{ values.component_id }}
-runtime: go
-description: ${{ values.description }}

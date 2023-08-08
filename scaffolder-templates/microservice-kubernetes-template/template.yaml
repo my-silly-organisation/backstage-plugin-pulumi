@@ -134,12 +134,6 @@ spec:
           "application-repo-target-revision": main
         folder: service
 
-    - id: wait
-      name: Wait for Pulumi to finish
-      action: debug:wait
-      input:
-        seconds: 9
-
     - id: publish
       name: Publish to GitHub
       action: publish:github
@@ -151,12 +145,6 @@ spec:
         defaultBranch: main
         requiredApprovingReviewCount: 0
         protectDefaultBranch: false
-
-    - id: wait2
-      name: Wait for Publish to finish
-      action: debug:wait
-      input:
-        seconds: 29
 
     - id: register
       name: Registering the Catalog Info Component

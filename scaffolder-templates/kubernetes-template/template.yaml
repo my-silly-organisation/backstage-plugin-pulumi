@@ -170,12 +170,6 @@ spec:
           "node:node_count": "${{ parameters.nodeCount }}"
         folder: .
 
-    - id: wait
-      name: Wait for the infrastructure template to be created
-      action: debug:wait
-      input:
-        seconds: 9
-
     - id: pulumi-deploy-infrastructure
       name: Deploy the infrastructure using Pulumi CLI
       action: pulumi:up
@@ -217,12 +211,6 @@ spec:
         defaultBranch: main
         requiredApprovingReviewCount: 0
         protectDefaultBranch: false
-
-    - id: wait2
-      name: Wait for the GitHub repository to be created
-      action: debug:wait
-      input:
-        seconds: 19
 
     - id: register
       name: Registering the Catalog Info Component
