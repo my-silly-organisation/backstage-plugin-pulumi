@@ -1,4 +1,6 @@
-import {createTemplateAction} from "@backstage/plugin-scaffolder-node";
+import {
+    createTemplateAction
+} from "@backstage/plugin-scaffolder-node";
 
 import {
     executeShellCommand,
