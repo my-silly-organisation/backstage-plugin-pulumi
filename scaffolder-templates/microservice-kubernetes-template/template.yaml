@@ -45,6 +45,7 @@ spec:
     - title: Configure Infrastructure
       required:
         - stack
+        - resource
       properties:
         resource:
           title: Kubernetes Cluster
